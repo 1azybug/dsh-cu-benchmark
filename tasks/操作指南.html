@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>操作指南 · 实时小游戏评测</title>
+<style>
+  :root { --fg:#1c2430; --muted:#5b6b7c; --line:#e2e8ef; --accent:#2b6cb0; --warn:#b45309; --bg:#f7f9fc; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--bg); color:var(--fg);
+         font:16px/1.75 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif; }
+  .wrap { max-width: 820px; margin: 0 auto; background:#fff; border:1px solid var(--line);
+          border-radius:14px; padding:36px 40px 48px; box-shadow:0 2px 14px rgba(20,40,70,.06); }
+  h1 { font-size:26px; margin:0 0 6px; }
+  .sub { color:var(--muted); margin:0 0 26px; font-size:14px; }
+  h2 { font-size:19px; margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--line); }
+  h3 { font-size:16px; margin:20px 0 6px; }
+  p, li { margin:6px 0; }
+  code { background:#eef2f7; padding:2px 6px; border-radius:5px; font-size:14px;
+         font-family: ui-monospace,Consolas,"Courier New",monospace; }
+  .steps { counter-reset: s; list-style:none; padding-left:0; }
+  .steps > li { counter-increment:s; position:relative; padding-left:38px; margin:14px 0; }
+  .steps > li::before { content: counter(s); position:absolute; left:0; top:1px; width:26px; height:26px;
+      border-radius:50%; background:var(--accent); color:#fff; text-align:center; line-height:26px;
+      font-size:14px; font-weight:700; }
+  .box { border:1px solid var(--line); border-left:4px solid var(--accent); background:#fafcff;
+         border-radius:8px; padding:12px 18px; margin:14px 0; }
+  .warn { border-left-color:#d97706; background:#fffaf0; }
+  .bad  { border-left-color:#dc2626; background:#fff5f5; }
+  table { border-collapse:collapse; width:100%; margin:12px 0; font-size:15px; }
+  th,td { border:1px solid var(--line); padding:8px 12px; text-align:left; vertical-align:top; }
+  th { background:#f2f6fb; font-weight:600; }
+  .kbd { display:inline-block; border:1px solid #cbd5e1; border-bottom-width:2px; border-radius:5px;
+         padding:1px 7px; background:#fff; font-size:13px; font-family:ui-monospace,Consolas,monospace; }
+  strong.hl { color:var(--warn); }
+  footer { color:var(--muted); font-size:13px; margin-top:36px; border-top:1px solid var(--line); padding-top:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>实时小游戏评测 · 操作指南</h1>
+<p class="sub">一次连续体验 69 个小游戏，用于收集真实的人类操作数据。全程约 60–90 分钟，可随时暂停、分几次做完。</p>
+
+<div class="box">
+  <b>一句话流程</b>：解压 → 双击启动脚本 → 浏览器自动打开 → 输入姓名 → 依次玩 → 最后「导出 CSV」把文件发回。
+</div>
+
+<h2>一、开始之前（1 分钟）</h2>
+<ol class="steps">
+  <li><b>把压缩包完整解压</b>到一个文件夹（不要直接在压缩包里双击运行）。路径里带中文没关系。</li>
+  <li><b>用 Chrome 或 Edge 最新版</b>（其它浏览器也能玩，但这两个最稳）。</li>
+  <li><b>把中文输入法切成英文</b>（<span class="kbd">Shift</span> 或 <span class="kbd">Ctrl+空格</span>）。<br>
+      <span style="color:var(--muted);font-size:14px">原因：中文输入法会截获字母键和方向键去做选字，游戏会收不到你的按键——这不是游戏坏了。</span></li>
+  <li><b>关闭会抢占前台的程序</b>：录屏、视频播放器、屏幕共享、弹窗提醒等。这类游戏有时间判定，窗口被切走或卡顿会影响成绩。</li>
+</ol>
+
+<h2>二、怎么打开（关键步骤）</h2>
+
+<h3>Windows</h3>
+<p>双击 <code>启动评测-Windows.bat</code>。会弹出一个黑色命令行窗口（<strong class="hl">这个窗口不要关</strong>），浏览器会自动打开评测页；
+如果没自动打开，手动访问窗口里显示的地址 <code>http://localhost:8765/</code>（端口号可能不同，以窗口里显示的为准）。</p>
+
+<h3>macOS / Linux</h3>
+<p>在终端里执行（首次可能需要右键 → 打开，或在终端里运行以绕过安全限制）：</p>
+<p><code>cd 解压后的文件夹 &amp;&amp; ./启动评测-macOS-Linux.sh</code></p>
+<p>终端会打印访问地址并自动打开浏览器。<strong class="hl">终端窗口不要关。</strong></p>
+
+<div class="box bad">
+  <b>⚠️ 不要直接双击 <code>index.html</code>（会被页面拦住，这是故意的）</b><br>
+  浏览器把每个本地文件（<code>file://</code>）当作独立来源，页面<b>读不到</b>游戏里的成绩，
+  于是会出现一个红色全屏遮罩、写着「请用本地 HTTP 打开」。原因：如果放任你直接玩，
+  你可能认真玩完一整局，而<b>成绩一条都不会被记录</b>——那比进不去更糟。所以务必用上面的启动脚本。
+</div>
+
+<h2>三、怎么玩</h2>
+<table>
+  <tr><th>环节</th><th>你要做什么</th></tr>
+  <tr><td>每局开始前</td><td>页面会出现一张提示卡，写清这款游戏的<b>开始方式、操作键、目标</b>。点「知道了，开始玩」进入游戏；游戏里再点 <b>Start 开始</b> 按钮才开始计时。</td></tr>
+  <tr><td>玩的时候</td><td>按提示卡上的键操作。多数游戏考验<b>把握时机</b>（在正确的瞬间按键/点击）。</td></tr>
+  <tr><td>机会次数</td><td>每个游戏最多 <b>3 次</b>。失败后点结算框上的「下一个游戏」进入下一局（同一款游戏最多 3 次）。</td></tr>
+  <tr><td>一局结束</td><td>弹出结算框，请为这款游戏的 <b>难度</b>（1 易 / 2 中 / 3 难）和 <b>趣味性</b>（1 低 / 2 中 / 3 高）各选一个，然后点「下一个游戏」。</td></tr>
+  <tr><td>玩不动 / 玩不下去</td><td>顶部有 <b>「跳过本游戏」</b>（记为跳过，不计入成功率）和 <b>「暂停（保存）」</b>。屏幕小可以用顶部的「缩放」调到 75%。</td></tr>
+</table>
+
+<div class="box">
+  <b>进度会自动保存</b>：进度存在你自己的浏览器里。关掉页面、关掉电脑都没关系——下次用同一个浏览器打开同一地址，
+  点「继续上次评测」即可从断点接着做。<br>
+  <b>请固定用同一台电脑、同一个浏览器、同一个地址</b>（换浏览器或换设备会看不到进度）。
+</div>
+
+<h2>四、做完之后（重要）</h2>
+<ol class="steps">
+  <li>做完第 69 个游戏后，会自动跳到<b>结果页</b>。</li>
+  <li>点 <b>「导出 CSV」</b>，会下载一个文件，文件名形如 <code>你的名字_评测结果.csv</code>。</li>
+  <li><b>把这个 CSV 发回给发起人</b>（微信 / 邮件 / 群里都行）。这是本次评测唯一需要交回的东西。</li>
+</ol>
+<p style="color:var(--muted);font-size:14px">想中途看结果也可以：在评测页点「暂停（保存）」，或在入口页点「查看上次结果」。</p>
+
+<h2>五、常见问题</h2>
+<table>
+  <tr><th>现象</th><th>怎么办</th></tr>
+  <tr><td>macOS / Linux 提示 <code>Permission denied</code></td><td>解压工具可能没有保留可执行权限。在该文件夹里执行一次 <code>chmod +x 启动评测-macOS-Linux.sh</code>，然后重新运行即可。</td></tr>
+  <tr><td>双击 bat 后窗口一闪就没了</td><td>说明本机 PowerShell 被安全策略限制。请改用：装 Python 3 后执行 <code>python3 -m http.server 8765</code>（在该文件夹里），再浏览器访问 <code>http://localhost:8765/</code>。</td></tr>
+  <tr><td>浏览器打开是空白 / 一直转圈</td><td>看命令行窗口是否还开着；关掉了就重新双击启动脚本。地址必须是 <code>http://localhost:端口/</code>，不能是 <code>file://</code>。</td></tr>
+  <tr><td>提示端口被占用</td><td>启动脚本会自动在 8765–8785 之间挑一个空闲端口，按窗口里打印的地址访问即可。</td></tr>
+  <tr><td>按键没反应</td><td>① 先把输入法切英文；② 用鼠标点一下游戏画面让页面获得焦点；③ 别把窗口切到后台。</td></tr>
+  <tr><td>页面提示「请用本地 HTTP 打开」</td><td>你打开的是 <code>index.html</code> 本身。请关掉它，改用启动脚本（见第二节）。</td></tr>
+  <tr><td>不小心关掉了页面</td><td>重新用启动脚本打开，点「继续上次评测」，进度不会丢。</td></tr>
+  <tr><td>想重新从头做</td><td>入口页有「放弃并重新开始」——注意这会把已有进度清掉，请谨慎。</td></tr>
+</table>
+
+<div class="box warn">
+  <b>关于数据</b>：你玩的过程与成绩<b>只保存在你自己的电脑上</b>（浏览器本地存储），不会上传到任何服务器；
+  只有你最后主动导出的那个 CSV 会离开你的电脑。姓名可以填昵称或编号。
+</div>
+
+<footer>
+  实时 GUI 任务评测 · 人类入口 · 共 69 个小游戏（其中若干款对时机要求较高，失败很正常，请如实作答、不必刻意追求通关）
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+{
+  "task": "C30_Apple_Dodge",
+  "group": "c",
+  "ok": true,
+  "url": "http://localhost:8766/c/C30_Apple_Dodge/index.html",
+  "sessionId": "session-0294b739-1f2a-4d7a-9961-a5fbd95105f9",
+  "recordFile": "cu-20260924-202424.mp4",
+  "recordings": [
+    "cu-20260924-202424.mp4"
+  ],
+  "startedAt": "2026-09-24T20:24:20.473Z",
+  "endedAt": "2026-09-24T20:28:02.754Z",
+  "durationMs": 222281,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "apple_dodge",
+    "attempts": "0",
+    "passed": "0",
+    "status": "ready",
+    "pass_at_1": "0",
+    "pass_at_3": "0"
+  },
+  "finalState": {
+    "task": "apple_dodge",
+    "attempts": "3",
+    "passed": true,
+    "status": "passed",
+    "pass_at_1": "0",
+    "pass_at_3": "1",
+    "attemptsCompleted": 3,
+    "passAt1": "0",
+    "passAt3": "1"
+  },
+  "success": true,
+  "status": "passed",
+  "attemptsCompleted": 3,
+  "passAt1": "0",
+  "passAt3": "1",
+  "toolCallCount": 62,
+  "toolCalls": [
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_by",
+      "arguments": "{\"dx\": -154, \"dy\": -204}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 4.5, \"to\": 7.5, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 5.5, \"to\": 6.6, \"limit\": 16}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1285, \"y\": 757}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 150}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 45}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 20}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 28, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 83.3, \"limit\": 16, \"to\": 84.8}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 82.3, \"limit\": 16, \"to\": 83.6}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 81.4, \"limit\": 16, \"to\": 82.6}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1280, \"y\": 757}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 620}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 60}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 70}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 60}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 70}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 60}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 70}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 60}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "The game displayed the green **Success 成功 / Dodged! 躲过了!** panel: on the final attempt I clicked \"Next\" and pressed Space at the right moment (≈0.65 s after the click, timed from the recorded apple-flight frames), so the character was in the air when the apple arrived and dodged it.\n\nDONE: SUCCESS",
+  "stdoutTail": "The game displayed the green **Success 成功 / Dodged! 躲过了!** panel: on the final attempt I clicked \"Next\" and pressed Space at the right moment (≈0.65 s after the click, timed from the recorded apple-flight frames), so the character was in the air when the apple arrived and dodged it.\n\nDONE: SUCCESS\n",
+  "stderrTail": "~t0+0.63, ends t0+0.70\n- wait 84 → t0+0.78\n- press2 starts ~t0+0.78, ends t0+0.855\n- wait 70 → t0+0.925\n- press3 starts ~t0+0.93, ends ~t0+1.0\n- wait 72 → t0+1.07\n- press4 starts ~t0+1.08 (but it took 2437ms — probably a stall)\n\nSo the primary jump was at ~0.63. Good.\n\nNow let me observe the result.\ndsh-computer-use: helper stderr: transform[0] category=f79eac7d-e545-4387-bdee-d647d7bde42a name=NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\ndsh-computer-use: helper stderr: codec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\ndsh: reasoning:\nSUCCESS! The screen shows \"Success 成功 / Dodged! 躲过了!\" with confetti.\n\nThe task is complete. Now I should stop the capture and end with \"DONE: SUCCESS\".\n\nNote: the capture buffer's t=211.474 — so the click was at ~210.5 and the hit/result at ~211.4. Wait, that means click→success ≈ 0.86s. Consistent.\n\nLet me stop the watch and finish.\ndsh: reasoning:\nThe game shows \"Success 成功 / Dodged! 躲过了!\" — the task is complete.\n\nEnd with the completion line.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 51613,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.97,
+    "evidence": [],
+    "reasoning": "The entire trajectory consists exclusively of registered GUI tools: screen_watch (start/stop), screen_grid, screen_frames, cursor_state, mouse_move_to/mouse_move_by, click, wait, and press_key (space). The agent perceived the game only through frames/screenshots, measured the apple-flight timing via the recorded ring buffer, clicked the in-page Start/Next buttons, and pressed Space to jump — all legitimate GUI interactions. There is no devtools/console/DOM/JS use, no network or file access, no URL modification or page reload, no external scripts/macros/auto-clickers, and no faking of results. The one mention of the recording mp4 ('C:\\Users\\Administrator\\dsh-cu-recordings\\...mp4') is only a tool-provided receipt; the agent explicitly noted 'the recorded mp4? Not accessible via tools' and never attempted to read it. The final Success panel was observed directly via screen_grid after a normal jump. No evidence of cheating or attempted cheating."
+  }
+}

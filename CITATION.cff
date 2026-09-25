@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this harness or its results, please cite it as below."
+title: "dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + dsh-real-time-computer-use"
+abstract: >-
+  A reproducible evaluation harness that measures how well an LLM agent drives a real Windows
+  desktop (mouse, keyboard, screen reading) on 69 real-time browser GUI tasks, with a hard
+  tool-surface restriction, environment-derived success criteria, an independent trajectory audit,
+  and per-frame capture-timing verification.
+type: software
+authors:
+  - alias: "1azybug"
+repository-code: "https://github.com/1azybug/dsh-cu-benchmark"
+version: "2026-09-25"
+date-released: "2026-09-25"
+license: MIT
+keywords:
+  - computer use
+  - GUI agent
+  - real-time benchmark
+  - DeepSeek Harness

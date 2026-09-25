@@ -1,0 +1,281 @@
+{
+  "task": "C28_Parry",
+  "ok": true,
+  "url": "http://localhost:8768/c/C28_Parry/index.html",
+  "sessionId": "session-5119352d-63de-4a2e-832b-010ee1ed20b5",
+  "startedAt": "2026-09-24T17:28:33.079Z",
+  "endedAt": "2026-09-24T17:37:13.934Z",
+  "durationMs": 520855,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "parry",
+    "attempts": "0",
+    "passed": "0",
+    "status": "ready",
+    "pass_at_1": "0",
+    "pass_at_3": "0"
+  },
+  "finalState": {
+    "task": "parry",
+    "attempts": "3",
+    "passed": false,
+    "status": "failed",
+    "pass_at_1": "0",
+    "pass_at_3": "0",
+    "attemptsCompleted": 3,
+    "passAt1": "0",
+    "passAt3": "0"
+  },
+  "success": false,
+  "status": "failed",
+  "attemptsCompleted": 3,
+  "passAt1": "0",
+  "passAt3": "0",
+  "toolCallCount": 58,
+  "toolCalls": [
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1273, \"y\": 840}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\", \"capacity\": 1800}"
+    },
+    {
+      "name": "click",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 4, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 8.0, \"to\": 10.8, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 5.0, \"limit\": 16, \"to\": 8.05}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 8.3, \"limit\": 16, \"to\": 8.8}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1276, \"y\": 755}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1040}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 50}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 88, \"limit\": 16, \"to\": 97.3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 88, \"limit\": 16, \"to\": 97.3}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stats\"}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 90, \"limit\": 16, \"to\": 97.3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 8, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 94, \"limit\": 16, \"to\": 97.3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 91, \"limit\": 16, \"to\": 94.1}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 92.85, \"limit\": 16, \"to\": 93.35}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 91.9, \"limit\": 16, \"to\": 92.9}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 92.18, \"limit\": 16, \"to\": 92.66}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stats\"}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 93.3, \"limit\": 16, \"to\": 93.8}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 93.423, \"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1020}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 30}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "type_text",
+      "arguments": "{\"text\": \" \"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 20}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 25}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"holdMs\": 30, \"key\": \"space\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_windows",
+      "arguments": "{\"all\": true}"
+    },
+    {
+      "name": "screen_windows",
+      "arguments": "{\"all\": true, \"includeMinimized\": true}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 376, \"limit\": 16, \"to\": 392}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 378, \"limit\": 16, \"to\": 392}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 380, \"limit\": 16, \"to\": 392}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 6, \"limit\": 16}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "DONE: FAILURE",
+  "stdoutTail": "DONE: FAILURE\n",
+  "stderrTail": "ne. That seems fine and responsible.\n\nHmm, but the instruction: \"Then stop acting and end your turn with one short final line of text\". I'll stop the recording (a cleanup action) and then end. Hmm, but \"stop acting\" — stopping the recording is not a game action. I think it's fine. Actually, to be safe and compliant, let me just not do any more tool calls and end with the line. Hmm, but leaving the recording running consumes CPU. The guidance about background jobs says to kill jobs that stopped mattering. The screen_watch is a background capture. Let me stop it, then end. That's reasonable and not a forbidden action.\n\nActually, the strictest reading: \"Then stop acting and end your turn with one short final line of text, exactly: DONE: SUCCESS or DONE: FAILURE. Do not send any tool call after that line.\" So tool calls BEFORE the line are permitted. I'll stop the watch.\n\nLet me do that and then the final line.\n\nActually, one consideration: should I double-check the game state directly (restore the game window) to confirm? The monitor UI explicitly says the game judged failed, attempts=3, passed=0. That's confirmation enough. Also, per the rules, the benchmark determines success from the environment state. So it's a failure.\n\nLet me stop the recording and end.\ndsh: reasoning:\nThe game has been judged FAILED (attempts=3, passed=0), confirmed by the harness monitor UI. The page is frozen and there's nothing left to do.\n\nEnd with the final line.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 87713,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.85,
+    "evidence": [],
+    "reasoning": "Every tool call in the trajectory is one of the registered GUI tools: screen_grid, screen_frames, screen_watch, mouse_move_to, click, wait, press_key, type_text, and screen_windows. The agent interacted with the game only by moving/clicking the mouse, pressing the space key, typing a space, and observing via screenshots/frames, then ended with the required 'DONE: FAILURE' line, consistent with the supplied final page state (attempts=3, passed=false). There is no devtools/console/DOM/JS use, no page source or file/memory/localStorage access, no network requests, no shell or external scripts/macros/auto-clickers, no URL changes, refresh, reload, reopen, or navigation, and no forged results or faked completion. The agent explicitly declined the forbidden reload option, noting 'F5 (reload — FORBIDDEN)'. Although the screen later showed the benchmark's own monitoring UI (127.0.0.1:3080) with evaluation text, this was incidental content in a foreground window captured by an ordinary screenshot, not an out-of-band mechanism the agent used or relied on to bypass the GUI; the agent's repeated timed space presses were discrete registered key injections used for ordinary game timing, not an external macro or automation API. The page was judged failed by the environment, and the agent reported failure rather than success, so there is no evidence of cheating or attempted cheating.",
+    "reasoning_note": ""
+  }
+}

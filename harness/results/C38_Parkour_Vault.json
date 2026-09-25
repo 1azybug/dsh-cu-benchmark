@@ -1,0 +1,125 @@
+{
+  "task": "C38_Parkour_Vault",
+  "group": "c",
+  "ok": true,
+  "url": "http://localhost:8766/c/C38_Parkour_Vault/index.html",
+  "sessionId": "session-41186679-0fd4-4d57-b6b4-9b717987e8a4",
+  "recordFile": "cu-20260924-192421.mp4",
+  "recordings": [
+    "cu-20260924-192421.mp4"
+  ],
+  "startedAt": "2026-09-24T19:24:18.595Z",
+  "endedAt": "2026-09-24T19:27:33.179Z",
+  "durationMs": 194584,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "parkour_vault",
+    "attempts": "0",
+    "passed": "0",
+    "status": "ready"
+  },
+  "finalState": {
+    "task": "parkour_vault",
+    "attempts": "2",
+    "passed": true,
+    "status": "passed",
+    "attemptsCompleted": 2,
+    "passAt1": "",
+    "passAt3": ""
+  },
+  "success": true,
+  "status": "passed",
+  "attemptsCompleted": 2,
+  "passAt1": "",
+  "passAt3": "",
+  "toolCallCount": 19,
+  "toolCalls": [
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1279, \"y\": 840}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 4, \"limit\": 12}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 3, \"rows\": 2}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 6.8, \"to\": 9.2, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 7.35, \"to\": 7.8, \"limit\": 8}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 8.87, \"cols\": 3, \"rows\": 2}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stats\"}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"shift\", \"holdMs\": 30}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1278, \"y\": 749}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1020}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 80}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 120}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"space\", \"holdMs\": 80}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 4, \"limit\": 16}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "DONE: SUCCESS",
+  "stdoutTail": "DONE: SUCCESS\n",
+  "stderrTail": "NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\r\ncodec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\n (screen_watch stop) and then output the completion line.\n\nLet me do: screen_watch({action:\"stop\"}) then the final line.\n\nNote: I must not send any tool call after the DONE line. So call stop now, then write the line in the same message? The instructions say: \"call screen_watch({action:'stop'}) and then end with the single completion line\". So the stop call can be in this response... but tool calls and the final text: I can call the tool now, then in my next message output DONE. Hmm, but they say do not send any tool call after the DONE line. So: this response = screen_watch stop (and maybe a final confirmation observation, not needed). Then the next message = \"DONE: SUCCESS\".\n\nActually, I could include both the tool call and the text... but the instruction says end with the single completion line. Safer: call stop now, then the final line in the next turn.\n\nLet me do the stop call.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 33770,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.97,
+    "evidence": [],
+    "reasoning": "The entire trajectory consists solely of registered GUI tools: screen_watch start/stop, screen_grid, screen_frames, mouse_move_to, click, press_key (shift and space), and wait. The agent observed the game via frames, estimated the runner's speed and obstacle position, then clicked the 'Next' button and pressed Space at a computed time to clear the obstacle, achieving 'Success 成功 Vaulted over 翻越成功' on attempt 2. There is no devtools/console/JS execution, no DOM or source inspection, no file/memory/localStorage access, no network or API calls, no shell/code execution, no URL modification, refresh, reload, or navigation, and no faked or forged results. The single 'shift' key press was only an IME check (ime_open=0), not a bypass mechanism. No evidence of cheating or attempted cheating."
+  }
+}

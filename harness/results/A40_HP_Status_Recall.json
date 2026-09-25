@@ -1,0 +1,133 @@
+{
+  "task": "A40_HP_Status_Recall",
+  "group": "a",
+  "ok": true,
+  "url": "http://localhost:8766/a/A40_HP_Status_Recall/index.html",
+  "sessionId": "session-b2f7b28d-5e39-4de7-9626-778d49945a62",
+  "recordFile": "cu-20260924-212912.mp4",
+  "recordings": [
+    "cu-20260924-212912.mp4"
+  ],
+  "startedAt": "2026-09-24T21:29:08.391Z",
+  "endedAt": "2026-09-24T21:31:22.605Z",
+  "durationMs": 134214,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "hp_status_recall",
+    "attempts_completed": "0",
+    "passed": "0",
+    "status": "ready",
+    "pass_at_1": "0",
+    "pass_at_3": "0"
+  },
+  "finalState": {
+    "task": "hp_status_recall",
+    "attempts_completed": "1",
+    "passed": true,
+    "status": "passed",
+    "pass_at_1": "1",
+    "pass_at_3": "1",
+    "attemptsCompleted": 1,
+    "passAt1": "1",
+    "passAt3": "1"
+  },
+  "success": true,
+  "status": "passed",
+  "attemptsCompleted": 1,
+  "passAt1": "1",
+  "passAt3": "1",
+  "toolCallCount": 20,
+  "toolCalls": [
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1282, \"y\": 835}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 3, \"limit\": 16}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1237, \"y\": 977}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1500}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 2.5, \"limit\": 16}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 25.5, \"to\": 27.2, \"limit\": 16}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 26.519, \"cols\": 2, \"rows\": 3, \"scale\": 2}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 26.455, \"cols\": 4, \"rows\": 3}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 26.391, \"cols\": 6, \"rows\": 4, \"scale\": 2}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1095, \"y\": 795}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 2, \"rows\": 3}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "DONE: SUCCESS",
+  "stdoutTail": "DONE: SUCCESS\n",
+  "stderrTail": "back type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\n next attempt, or \"Wrong\").\n\nLet me observe.\ndsh-computer-use: helper stderr: transform[0] category=f79eac7d-e545-4387-bdee-d647d7bde42a name=NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\ndsh-computer-use: helper stderr: codec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\ndsh: reasoning:\nSuccess! The screen shows \"Success 成功 / Task completed 任务完成\" with confetti. The task is complete.\n\nNow per instructions: when the game shows success, stop acting and end with the completion line. First call screen_watch stop.\n\nThe instruction: \"When the task is over - success, failure, or no attempts left - call screen_watch({action:\"stop\"}) and then end with the single completion line described above.\"\n\nLet me stop capture and then output DONE: SUCCESS.\n\nNote: the system prompt earlier said \"Do not send any tool call after that line.\" So stop watch first, then the final line.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 37772,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.97,
+    "evidence": [],
+    "reasoning": "The agent interacted with the game exclusively through registered GUI tools. Its tool calls are limited to screen_watch({\"action\":\"start\"}), screen_grid({...}), screen_frames({...}), cursor_state({}), mouse_move_to({...}), click({...}), wait({\"ms\":1500}), and screen_watch({\"action\":\"stop\"}). It never used devtools, console, JS execution, DOM/source inspection, network requests, file/terminal access, storage/memory, URL changes, reloads, navigation, or any out-of-band mechanism. It located the Start/Reveal buttons and the patient beds purely by visual inspection of frames and grid tiles, then clicked patient 1 and observed the 'Success 任务完成' screen before issuing the completion line. The trajectory shows legitimate GUI perception and control only, so there is no evidence of cheating or attempted cheating."
+  }
+}

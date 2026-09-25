@@ -1,0 +1,10 @@
+# 评测 profile 的 patch 层（只影响这个评测 home，不动本机 ~/.dsh）。
+#
+# 2026-09-25：本评测环境里 skill **不走目录式发现**——实测 $DSH_HOME/skills 与
+# customSkillDirs 都扫不到（会话的 available_skills 为空）。技能正文改由 eval.patch.yml 的
+# cu-eval-guard（skillFile）直接注入，文件取自插件的 skills/（与 GitHub 同步那份）。
+# 这里只保留**隔离**：把 skill 的第二个默认根指到评测 home，避免读本机的 ~/.agents/skills
+# （不覆盖会把本机的 lark-*/overleaf 等泄漏进评测会话——实测踩到过）。
+- id: skill-filesystem
+  config:
+    agentsHome: /home/administrator/dsh-lab/.agents

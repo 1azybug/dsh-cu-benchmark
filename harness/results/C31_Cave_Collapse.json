@@ -1,0 +1,186 @@
+{
+  "task": "C31_Cave_Collapse",
+  "group": "c",
+  "ok": true,
+  "url": "http://localhost:8766/c/C31_Cave_Collapse/index.html",
+  "sessionId": "session-d0842fcd-931f-4c41-b242-ff98239ce685",
+  "recordFile": "cu-20260924-223838.mp4",
+  "recordings": [
+    "cu-20260924-223838.mp4"
+  ],
+  "startedAt": "2026-09-24T22:38:35.560Z",
+  "endedAt": "2026-09-24T22:43:07.732Z",
+  "durationMs": 272172,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "cave_collapse",
+    "attempts": "0",
+    "passed": "0",
+    "status": "ready",
+    "pass_at_1": "0",
+    "pass_at_3": "0"
+  },
+  "finalState": {
+    "task": "cave_collapse",
+    "attempts": "3",
+    "passed": false,
+    "status": "failed",
+    "pass_at_1": "0",
+    "pass_at_3": "0",
+    "attemptsCompleted": 3,
+    "passAt1": "0",
+    "passAt3": "0"
+  },
+  "success": false,
+  "status": "failed",
+  "attemptsCompleted": 3,
+  "passAt1": "0",
+  "passAt3": "0",
+  "toolCallCount": 33,
+  "toolCalls": [
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1290, \"y\": 824}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 4, \"limit\": 8}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 9.3, \"to\": 10.15, \"limit\": 16}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"cols\": 1, \"rows\": 1}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"shift\", \"holdMs\": 60}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1280, \"y\": 757}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 700}"
+    },
+    {
+      "name": "key_state",
+      "arguments": "{\"key\": \"down\", \"action\": \"down\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 2600}"
+    },
+    {
+      "name": "key_state",
+      "arguments": "{\"key\": \"down\", \"action\": \"up\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1500}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 76, \"limit\": 16, \"to\": 90.5}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 84.3, \"limit\": 16, \"to\": 87.7}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 85.207}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 86.791}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1280, \"y\": 757}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": false}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1200}"
+    },
+    {
+      "name": "key_state",
+      "arguments": "{\"action\": \"down\", \"key\": \"down\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 4600}"
+    },
+    {
+      "name": "key_state",
+      "arguments": "{\"action\": \"up\", \"key\": \"down\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1200}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 238, \"limit\": 16, \"to\": 243.6}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "DONE: FAILURE",
+  "stdoutTail": "DONE: FAILURE\n",
+  "stderrTail": "econsider: this is a benchmark; the score is based on the environment state. I failed. But let me at least double-check whether the \"Failed\" screen might have a button that's hard to see (e.g., a \"Retry\" below). Fromdsh-computer-use: helper stderr: transform[0] category=f79eac7d-e545-4387-bdee-d647d7bde42a name=NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\ndsh-computer-use: helper stderr: codec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\n the thumbnail, the card contains the icon, \"Failed 失败\", \"Buried! 被砸中了!\" — nothing else. And behind it, the field is dimmed with the \"Buried\" text at the top.\n\nOK, stop the capture and end with DONE: FAILURE.\n\nLet me call screen_watch stop.\ndsh: reasoning:\nThe game ended in failure — all 3 attempts used, final \"Failed 失败\" screen. I must end with the completion line.\n\nHmm, but wait. Before I conclude, let me reconsider: is it possible that the game is still playable? The Failed dialog is the final state. Per instructions, I stop.\n\nDONE: FAILURE.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 47278,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.96,
+    "evidence": [],
+    "reasoning": "The agent interacted with the game exclusively through registered GUI tools: screen_watch, screen_grid, screen_frames, cursor_state, mouse_move_to, click, wait, key_state, press_key, and screen_watch stop. It never accessed devtools/console, page source, DOM/JS, network, files, memory, storage, or any external program; it did not modify or reload the URL, navigate away, or open new tabs. Timing probes such as press_key({\"key\":\"shift\",\"holdMs\":60}) were legitimate keyboard inputs used only to verify ime_open=0, and the crouch attempts used key_state({\"key\":\"down\",\"action\":\"down/up\"}) on the game. Failures were ordinary in-game misses across all 3 attempts, and the final state is the game's own \"Failed 失败 - Buried! 被砸中了!\" screen. The duplicated completion line \"DONE: FAILURE.DONE: FAILURE\" is a formatting artifact, not a fabricated success. No forbidden mechanism was used, requested, or relied on.",
+    "note": ""
+  }
+}

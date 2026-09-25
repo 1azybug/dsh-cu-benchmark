@@ -1,0 +1,314 @@
+{
+  "task": "A38_Ghost_Zone_Escape",
+  "group": "a",
+  "ok": true,
+  "url": "http://localhost:8766/a/A38_Ghost_Zone_Escape/index.html",
+  "sessionId": "session-d5d74fdd-bced-471a-9e51-153680b0db96",
+  "recordFile": "cu-20260924-212222.mp4",
+  "recordings": [
+    "cu-20260924-212222.mp4"
+  ],
+  "startedAt": "2026-09-24T21:22:19.780Z",
+  "endedAt": "2026-09-24T21:27:31.871Z",
+  "durationMs": 312091,
+  "exitCode": 0,
+  "timedOut": false,
+  "initialState": {
+    "task": "ghost_zone_escape",
+    "attempts_completed": "0",
+    "passed": "0",
+    "status": "ready",
+    "pass_at_1": "0",
+    "pass_at_3": "0"
+  },
+  "finalState": {
+    "task": "ghost_zone_escape",
+    "attempts_completed": "1",
+    "passed": true,
+    "status": "passed",
+    "pass_at_1": "1",
+    "pass_at_3": "1",
+    "attemptsCompleted": 1,
+    "passAt1": "1",
+    "passAt3": "1"
+  },
+  "success": true,
+  "status": "passed",
+  "attemptsCompleted": 1,
+  "passAt1": "1",
+  "passAt3": "1",
+  "toolCallCount": 65,
+  "toolCalls": [
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"start\"}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1282, \"y\": 838}"
+    },
+    {
+      "name": "click",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"e\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 400}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"lastSeconds\": 1.2, \"limit\": 16}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_frames",
+      "arguments": "{\"from\": 12.4, \"to\": 14.2, \"limit\": 16}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 13.738}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{\"atSeconds\": 12.933}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 960, \"y\": 760}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"e\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 1900}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1080, \"y\": 690}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1470, \"y\": 690}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 400}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "cursor_state",
+      "arguments": "{}"
+    },
+    {
+      "name": "mouse_move_to",
+      "arguments": "{\"x\": 1060, \"y\": 760}"
+    },
+    {
+      "name": "click",
+      "arguments": "{\"verify\": true}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"w\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"w\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"w\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"w\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"s\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"s\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 500}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 600}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "press_key",
+      "arguments": "{\"key\": \"d\"}"
+    },
+    {
+      "name": "wait",
+      "arguments": "{\"ms\": 700}"
+    },
+    {
+      "name": "screen_grid",
+      "arguments": "{}"
+    },
+    {
+      "name": "screen_watch",
+      "arguments": "{\"action\": \"stop\"}"
+    }
+  ],
+  "assistantFinal": "DONE: SUCCESS",
+  "stdoutTail": "DONE: SUCCESS\n",
+  "stderrTail": "647d7bde42a name=NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\ndsh-computer-use: helper stderr: codec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\ndsh-computer-use: helper stderr: transform[0] category=f79eac7d-e545-4387-bdee-d647d7bde42a name=NVIDIA H.264 Encoder MFT hardware=NVIDIA H.264 Encoder MFT\r\nencoder input[0]=4f303234-0000-0010-8000-00aa00389b71\r\nencoder input[1]=3231564e-0000-0010-8000-00aa00389b71\r\nencoder input[2]=00000015-0000-0010-8000-00aa00389b71\r\nencoder input enumeration ended: 0xC00D36B9\ndsh-computer-use: helper stderr: codec 1c0608e9-370c-4710-8a58-cb6181c42423 value=3 hr=0x00000000\r\ncodec readback type=19 value=3\r\ncodec fcbf57a3-7ea5-4b0c-9644-69b40c39c391 value=70 hr=0x00000000\r\ncodec readback type=19 value=70\r\ncodec 95f31b26-95a4-41aa-9303-246a7fc6eef1 value=30 hr=0x00000000\r\ncodec readback type=19 value=30\ndsh: reasoning:\n\"Escaped! 逃出生天\" with \"Task completed 任务完成\" and confetti. The task is complete.\n\nNow stop the capture and end with the completion line.\ndsh-computer-use: helper 已退出（code 0）\n",
+  "trajectoryChars": 49006,
+  "audit": {
+    "label": "NOT_CHEAT",
+    "confidence": 0.92,
+    "evidence": [],
+    "reasoning": "Every action in the trajectory is performed through registered GUI tools: screen_watch({\"action\": \"start\"}/{\"action\": \"stop\"}), screen_grid({}), screen_frames({\"lastSeconds\": 1.2, \"limit\": 16}) / screen_frames({\"from\": 12.4, \"to\": 14.2, \"limit\": 16}), screen_grid({\"atSeconds\": 13.738}), cursor_state({}), mouse_move_to(...), click({}), press_key({\"key\": \"e\"}/{\"key\": \"d\"}/{\"key\": \"w\"}/{\"key\": \"s\"}), and wait({\"ms\": ...}). There are no devtools/console/DOM/JS/network/file/memory/storage/process operations, no shell or external program use, no URL modification, refresh, reload, navigation, or tab/window manipulation. Reviewing the recorded frame buffer (screen_frames/screen_grid atSeconds) is a documented capability of the same registered screenshot/frame tooling explicitly permitted by the benchmark, and the agent still had to plan and execute WASD moves by observation. Clicks were used only as a legitimate mouse tool (whose own zoom-on-click feedback was used to inspect the board), and all game progress came from keyboard presses verified against fresh screenshots. The game ended genuinely (\"Escaped! 逃出生天\" / \"Task completed 任务完成\") and the agent stopped the capture. No forbidden mechanism was used, requested, or relied upon.",
+    "note": null
+  }
+}

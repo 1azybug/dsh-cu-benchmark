@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RealtimeGUI Benchmark - 人类评测</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; background: #0a0c18; color: #e8eaf6; min-height: 100vh; }
+  .page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+  .hidden { display: none !important; }
+
+  /* file:// 全屏拦截遮罩：本地文件被视为独立 origin，父页面读不到 iframe 的 BENCH，
+     评测无法记录。为避免用户白玩一整局，页面加载即拦住（见 README.md）。 */
+  #fileBlocker { position: fixed; inset: 0; z-index: 2000; background: rgba(6,8,16,.985);
+                 display: flex; align-items: center; justify-content: center; padding: 24px; overflow: auto; }
+  #fileBlocker .fb-box { background: #1c2743; border: 2px solid #c0392b; border-radius: 18px;
+                         padding: 32px 36px; max-width: 660px; box-shadow: 0 24px 70px rgba(0,0,0,.65); }
+  #fileBlocker .fb-title { font-size: 19px; font-weight: 800; color: #ffb4a8; margin-bottom: 14px; line-height: 1.5; }
+  #fileBlocker .fb-reason { font-size: 14px; color: #c3c9e2; line-height: 1.9; margin-bottom: 22px; }
+  #fileBlocker .fb-step { margin-bottom: 18px; }
+  #fileBlocker .fb-label { font-size: 13.5px; color: #8b93b8; margin-bottom: 8px; }
+  #fileBlocker .fb-cmd { display: flex; align-items: center; gap: 10px; background: #0f1528;
+                         border: 1px solid #3a4870; border-radius: 10px; padding: 10px 12px; }
+  #fileBlocker .fb-cmd code { font-size: 14px; color: #a8e6a3; flex: 1; user-select: all; word-break: break-all; }
+  #fileBlocker .fb-cmd button { padding: 8px 16px; font-size: 13px; border: none; border-radius: 14px;
+                                background: #4c7dff; color: #fff; cursor: pointer; flex: none; font-weight: 700; }
+  #fileBlocker .fb-url code { display: inline-block; background: #0f1528; border: 1px solid #3a4870;
+                              border-radius: 8px; padding: 8px 12px; font-size: 14px; color: #f6c453; user-select: all; }
+  #fileBlocker .fb-hint { font-size: 12.5px; color: #34d399; margin-top: 8px; min-height: 16px; }
+  #fileBlocker .fb-note { font-size: 12.5px; color: #8b93b8; line-height: 1.85; margin-top: 20px; }
+  #fileBlocker code { background: rgba(0,0,0,.32); padding: 1px 5px; border-radius: 4px; }
+
+  /* 入口页 */
+  #entryPage .box { background: #1c2743; border-radius: 20px; padding: 48px 56px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.5); max-width: 620px; }
+  #entryPage h1 { font-size: 26px; margin-bottom: 8px; color: #fff; }
+  #entryPage p { font-size: 14px; color: #8b93b8; margin-bottom: 22px; line-height: 1.7; }
+  #entryPage input { width: 100%; padding: 14px 18px; font-size: 17px; border-radius: 12px; border: 2px solid #2e3a5c; background: #0f1528; color: #fff; outline: none; margin-bottom: 20px; }
+  #entryPage input:focus { border-color: #4c7dff; }
+  #entryPage button { padding: 14px 44px; font-size: 17px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; background: linear-gradient(150deg,#4c7dff,#3355d8); color: #fff; }
+  #entryPage button:disabled { opacity: .4; cursor: not-allowed; }
+  #entryPage .tip { font-size: 12.5px; color: #6f78a0; margin-top: 18px; line-height: 1.7; text-align: left; }
+
+  /* 存档面板 */
+  #resumePanel { background: #0f1528; border: 2px solid #f6c453; border-radius: 14px; padding: 18px 20px; margin-bottom: 22px; text-align: left; }
+  #resumePanel .rt { font-size: 14.5px; color: #f6c453; font-weight: 700; margin-bottom: 8px; }
+  #resumeInfo { font-size: 13.5px; color: #c3c9e2; line-height: 1.8; margin-bottom: 14px; }
+  #resumePanel .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  #resumePanel button { padding: 10px 22px; font-size: 14.5px; border-radius: 20px; }
+  #resumePanel button.ghost { background: #2e3a5c; }
+
+  /* 评测页 */
+  #playPage { padding: 0; justify-content: flex-start; height: 100vh; overflow: hidden; }
+  #hud { width: 100%; flex: none; display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: #141b33; font-size: 14px; flex-wrap: wrap; }
+  #hud .name { color: #4c7dff; font-weight: 700; }
+  #hud .prog { color: #f6c453; font-weight: 700; }
+  #hud .game { color: #c3c9e2; }
+  #hud .stat { color: #8b93b8; font-size: 13px; }
+  #hud .spacer { flex: 1; }
+  #hud button { padding: 7px 16px; font-size: 13px; border-radius: 16px; border: 1px solid #3a4870; background: #232f52; color: #c3c9e2; cursor: pointer; }
+  #hud button:hover { background: #2e3d68; color: #fff; }
+  #bar { width: 100%; height: 5px; background: #1a2138; flex: none; }
+  #barFill { height: 100%; width: 0%; background: linear-gradient(90deg,#4c7dff,#34d399); transition: width .25s; }
+  #frameWrap { position: relative; width: 100%; flex: 1; min-height: 0; overflow: auto; }
+  #gameFrame { width: 100%; min-width: 820px; height: 100%; min-height: 700px; border: none; display: block; }
+
+  /* 通用遮罩（自评 / 暂停） */
+  .modal { position: fixed; inset: 0; background: rgba(10,12,24,.8); display: flex; align-items: center; justify-content: center; z-index: 999; }
+  .modal .box { background: #1c2743; border-radius: 20px; padding: 36px 44px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.6); max-width: 520px; }
+  .modal h2 { font-size: 20px; margin-bottom: 4px; color: #fff; }
+  .modal .sub { font-size: 13px; color: #8b93b8; margin-bottom: 22px; line-height: 1.7; }
+  .rate-group { margin-bottom: 20px; text-align: left; }
+  .rate-group .label { font-size: 14px; color: #c3c9e2; margin-bottom: 8px; }
+  .rate-opts { display: flex; gap: 8px; }
+  .rate-opts button { flex: 1; padding: 10px 0; font-size: 15px; font-weight: 700; border: 2px solid #2e3a5c; border-radius: 10px; background: #0f1528; color: #c3c9e2; cursor: pointer; transition: all .15s; }
+  .rate-opts button.sel { border-color: #4c7dff; background: #23408f; color: #fff; }
+  .primary { padding: 13px 44px; font-size: 16px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; background: linear-gradient(150deg,#4c7dff,#3355d8); color: #fff; }
+  .primary:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* 结果页 */
+  #resultPage { justify-content: flex-start; padding-top: 30px; }
+  #resultPage .box { background: #1c2743; border-radius: 20px; padding: 36px 40px; box-shadow: 0 20px 60px rgba(0,0,0,.5); max-width: 1200px; width: 100%; }
+  #resultPage h1 { font-size: 24px; margin-bottom: 16px; color: #fff; }
+  #summary { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+  #summary .card { background: #0f1528; border-radius: 12px; padding: 16px 22px; flex: 1; min-width: 140px; }
+  #summary .card .v { font-size: 26px; font-weight: 800; color: #f6c453; }
+  #summary .card .k { font-size: 12px; color: #8b93b8; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #2e3a5c; }
+  th { color: #8b93b8; font-weight: 600; position: sticky; top: 0; background: #1c2743; }
+  td .ok { color: #34d399; } td .fail { color: #f87171; } td .skip { color: #f6c453; }
+  #exportBtn { margin-top: 20px; padding: 13px 40px; font-size: 16px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; background: linear-gradient(150deg,#34d399,#0ea371); color: #fff; }
+  #tableWrap { max-height: 420px; overflow-y: auto; }
+  .zoomwrap { color: #8b93b8; font-size: 13px; }
+  .zoomwrap select { background: #232f52; color: #c3c9e2; border: 1px solid #3a4870; border-radius: 8px; padding: 4px 6px; font-size: 13px; }
+
+  /* 操作引导提示卡（覆盖在游戏上方，5 秒后自动淡出） */
+  #tipCard { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); z-index: 50;
+             background: rgba(28,39,67,.96); border: 1px solid #3a4870; border-radius: 14px;
+             padding: 16px 22px; box-shadow: 0 12px 36px rgba(0,0,0,.55); max-width: 720px; pointer-events: auto; }
+  #tipCard .tip-title { font-size: 15px; font-weight: 700; color: #f6c453; margin-bottom: 10px; }
+  #tipCard .tip-line { font-size: 13.5px; color: #c3c9e2; line-height: 1.9; display: flex; gap: 8px; }
+  #tipCard .tip-line b { color: #8b93b8; font-weight: 600; flex: none; width: 34px; }
+  #tipCard button { margin-top: 12px; padding: 8px 20px; font-size: 13.5px; border: none; border-radius: 16px;
+                    background: linear-gradient(150deg,#4c7dff,#3355d8); color: #fff; cursor: pointer; }
+
+  .note { font-size: 12.5px; color: #8b93b8; line-height: 1.8; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<!-- file:// 拦截遮罩：默认隐藏，仅在 location.protocol === "file:" 时全屏显示并禁止进入评测 -->
+<div id="fileBlocker" class="hidden">
+  <div class="fb-box">
+    <div class="fb-title">⚠️ 请用本地 HTTP 打开 —— file:// 下无法评测</div>
+    <div class="fb-reason">
+      浏览器把每个 <code>file://</code> 本地文件当作<b>独立 origin</b>，本页读不到游戏 iframe 里的
+      <code>window.BENCH</code>（控制台会报 <code>Blocked a frame with origin "null"</code>）。
+      也就是说：<b>游戏能玩，但成绩一律不会被记录</b>。为了不让你白玩一整局，这里直接拦住了。
+    </div>
+    <div class="fb-step">
+      <div class="fb-label">① 在本目录的终端里执行：</div>
+      <div class="fb-cmd"><code id="fbCmd">cd RealtimeGameForHuman && ./serve.sh</code><button id="fbCopy">复制命令</button></div>
+      <div class="fb-hint" id="fbCopyHint"></div>
+    </div>
+    <div class="fb-step">
+      <div class="fb-label">② 然后用浏览器访问（端口以脚本打印的为准）：</div>
+      <div class="fb-url"><code>http://127.0.0.1:8765/</code></div>
+    </div>
+    <div class="fb-note">
+      没有 <code>python3</code> 时，用任意静态服务器指向 <code>RealtimeGameForHuman/</code> 目录即可；
+      详见同目录 <code>README.md</code> 的「怎么打开」一节。
+    </div>
+  </div>
+</div>
+
+<!-- 入口页 -->
+<div id="entryPage" class="page">
+  <div class="box">
+    <h1>RealtimeGUI Benchmark · 人类评测</h1>
+    <p>共 69 个实时 HTML 游戏，覆盖四类任务（视频补丁 / anticipation / 组合补丁 / 无补丁）。<br>请依次游玩每个游戏，系统会自动记录每个游戏的用时、成功与否、第几次成功，并在每个游戏结束后请你自评难度与趣味性。</p>
+
+    <div id="resumePanel" class="hidden">
+      <div class="rt" id="resumeTitle">发现未完成的评测</div>
+      <div id="resumeInfo">—</div>
+      <div class="btns">
+        <button id="resumeBtn">继续上次评测</button>
+        <button id="discardBtn" class="ghost">放弃并重新开始</button>
+      </div>
+    </div>
+
+    <input id="nameInput" placeholder="请输入你的姓名（或编号）" autocomplete="off">
+    <button id="startBtn" onclick="startNew()" disabled>开始评测</button>
+    <div class="tip">
+      · 评测可中断：进度会自动保存在本机浏览器里，关掉页面后再打开可继续。<br>
+      · 每个游戏最多 3 次机会；中途可「跳过本游戏」（跳过不计入成功率）或「暂停」。<br>
+      · 记录的时长是墙钟时间，含回合之间的自评与点击操作停顿。
+    </div>
+  </div>
+</div>
+
+<!-- 评测页 -->
+<div id="playPage" class="page hidden">
+  <div id="hud">
+    <span class="name" id="hudName">—</span>
+    <span class="prog" id="hudProg">—</span>
+    <span class="game" id="hudGame">—</span>
+    <span class="stat" id="hudStat">—</span>
+    <span class="spacer"></span>
+    <label class="zoomwrap">缩放
+      <select id="zoomSel">
+        <option value="1">100%</option>
+        <option value="0.75">75%</option>
+        <option value="1.25">125%</option>
+      </select>
+    </label>
+    <button id="skipBtn" onclick="skipGame()">跳过本游戏</button>
+    <button id="pauseBtn" onclick="pauseGame()">暂停（保存）</button>
+  </div>
+  <div id="bar"><div id="barFill"></div></div>
+  <div id="frameWrap">
+    <div id="tipCard" class="hidden">
+      <div class="tip-title" id="tipTitle">—</div>
+      <div class="tip-line"><b>开始</b><span id="tipStart">—</span></div>
+      <div class="tip-line"><b>操作</b><span id="tipKeys">—</span></div>
+      <div class="tip-line"><b>目标</b><span id="tipGoal">—</span></div>
+      <button id="tipClose">知道了，开始玩</button>
+    </div>
+    <iframe id="gameFrame" allow="autoplay"></iframe>
+  </div>
+</div>
+
+<!-- 自评弹窗 -->
+<div id="ratingModal" class="modal hidden">
+  <div class="box">
+    <h2 id="ratingTitle">游戏完成</h2>
+    <div class="sub" id="ratingSub">—</div>
+    <div class="rate-group">
+      <div class="label">难度（对齐评测员：1=易 / 2=中 / 3=难）</div>
+      <div class="rate-opts" id="diffOpts">
+        <button data-v="1">1 · 易</button>
+        <button data-v="2">2 · 中</button>
+        <button data-v="3">3 · 难</button>
+      </div>
+    </div>
+    <div class="rate-group">
+      <div class="label">趣味性（1=低 / 2=中 / 3=高）</div>
+      <div class="rate-opts" id="funOpts">
+        <button data-v="1">1</button>
+        <button data-v="2">2</button>
+        <button data-v="3">3</button>
+      </div>
+    </div>
+    <button id="nextBtn" class="primary" onclick="nextGame()" disabled>下一个游戏</button>
+  </div>
+</div>
+
+<!-- 暂停弹窗 -->
+<div id="pauseModal" class="modal hidden">
+  <div class="box">
+    <h2>已暂停</h2>
+    <div class="sub" id="pauseSub">—</div>
+    <button class="primary" onclick="resumeFromPause()">继续评测</button>
+  </div>
+</div>
+
+<!-- 结果页 -->
+<div id="resultPage" class="page hidden">
+  <div class="box">
+    <h1 id="resultTitle">评测结果</h1>
+    <div id="summary"></div>
+    <div id="tableWrap"><table id="resultTable"><thead><tr>
+      <th>#</th><th>任务</th><th>类别</th><th>结果</th><th>第几次成功</th><th>总时长(s)</th><th>各次尝试时长(s)</th><th>难度自评</th><th>趣味自评</th>
+    </tr></thead><tbody id="resultBody"></tbody></table></div>
+    <button id="exportBtn" onclick="exportCSV()">导出 CSV</button>
+    <div class="note">
+      说明：<br>
+      · 「第几次成功」来自游戏协议 1.1 的 <code>attempts_completed</code>（已结算的完整尝试数，成功也计入），因此第 1 次成功即显示 1。<br>
+      · 总时长 / 各次尝试时长为<b>墙钟时间</b>，含回合之间的自评、点击「下一个游戏」等操作停顿。<br>
+      · 「跳过」的游戏不计入成功率分母，导出 CSV 中「是否成功」列为「跳过」、「是否跳过」列为「是」。
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'rgb-human-progress-v1';
+const ZOOM_KEY = 'rgb-human-zoom-v1';
+
+// 操作引导文案（**草稿**，来源见 RealtimeGameForHuman/tips.draft.md；由四类负责人抽查后定稿）
+const TIPS = {"a1":{"start":"点「Start 开始」按钮","keys":"鼠标点击卡片翻牌","goal":"翻出两张内容相同的牌即配对成功"},"a12":{"start":"点「Start 开始」按钮","keys":"鼠标点击画布上的杯子","goal":"换位结束后，点出藏着硬币的那个杯子"},"a14":{"start":"点「Start 开始」按钮","keys":"鼠标点击画布上的荷叶","goal":"豆子停跳后，点出藏着金豆的那片荷叶"},"a16":{"start":"点「Start 开始」按钮","keys":"鼠标点击画布上的泊位","goal":"卫星停靠后，点出它停靠的那个泊位"},"a17":{"start":"点「Start 开始」按钮，再点「Spin 旋转」","keys":"鼠标点击画布上的色块","goal":"转盘停下后，点出指针所指扇区的颜色"},"a21":{"start":"点「Start 开始」按钮","keys":"鼠标点击画布上的坑","goal":"球停下后，点出它滚进的那个坑"},"a23":{"start":"点「Start 开始」按钮","keys":"鼠标点击画布上的槽位","goal":"换位结束后，点出红球最终停靠的槽位"},"a24":{"start":"点「Start 开始」按钮，再点「Drop 投球」","keys":"鼠标点击画布上的落槽","goal":"弹珠落定后，点出它落进的那个槽"},"a31":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击答案区的数字按钮","goal":"点出与鸟群数量一致的数字"},"a34":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的角色","goal":"点出刚才从通风口探头的那个角色"},"a35":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的表情","goal":"点出刚才泄露的那种情绪"},"a36":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击答案区的单词按钮","goal":"点出刚才灯笼上闪现的那个单词"},"a37":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的落点槽位","goal":"点出小球实际落入的那个槽位"},"a38":{"start":"点「Start 开始」按钮，再按 E 照明开局","keys":"WASD 移动，E 照亮布局","goal":"沿安全通路走到右侧出口"},"a39":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的商品","goal":"点出折扣力度最大的那件商品"},"a40":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的伤员","goal":"点出生命值最低、最危急的那名伤员"},"a41":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击画布上的桌号牌","goal":"把三份订单都送到对应桌号"},"a42":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击下方的候选整图","goal":"点出与刚才偷看局部对应的那张整图"},"a43":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击下方的候选牌","goal":"点出刚才闪过的那张牌"},"a44":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击下方的候选符号","goal":"点出两张牌上唯一的共同符号"},"a45":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击下方的候选符文","goal":"点出刚才发光显现的那个符号"},"a46":{"start":"点「Start 开始」按钮，再点「Reveal 揭示」","keys":"鼠标点击下方的候选路径","goal":"点出刚才在藏宝图上显示的那条路径"},"b1":{"start":"点「Start 开始」按钮","keys":"点击靶","goal":"开始后 1 秒内点击靶（金色圆环显示剩余时间）"},"b4":{"start":"点「Start 开始」按钮","keys":"点击表盘","goal":"秒针指向 12 点金色刻度（±10°）时点击表盘鸣钟"},"b7":{"start":"点「Start 开始」按钮","keys":"用鼠标点击工位卡片","goal":"按满格先后顺序（2 号→3 号→1 号）依次点击三个工位，每次在该工位刚满格时点"},"b14":{"start":"点「Start 开始」按钮","keys":"点击军鼓","goal":"在第 3 声强拍前后 125 毫秒内击中军鼓"},"b15":{"start":"点「Start 开始」按钮","keys":"按 GO 按钮","goal":"绿灯亮起（红 1 秒→绿 0.5 秒循环）时按 GO，护送行人安全走完斑马线"},"b20":{"start":"点「Start 开始」按钮","keys":"按住发报键（或按住空格键）","goal":"按「短—长—短」三下发出摩斯字母 R（短按 ≤0.2 秒、长按 0.2~0.5 秒）"},"b23":{"start":"点「Start 开始」按钮","keys":"按方向键 → ↓ → ↑","goal":"倒计时走到 0.00 时（±0.75 秒内）按序输入 4 方向连招，打出终结连击"},"b32":{"start":"点「Start 开始」按钮","keys":"按音符所在轨道的键 D / F / J / K","goal":"音符到达判定线时（±150 毫秒）按下其轨道键，4 个音符全部命中"},"b36":{"start":"点「Start 开始」按钮","keys":"按住滑块沿直线轨道拖到绿色 END 区","goal":"2 秒内把滑块拖到绿色 END 区并松手（倒计时归零前完成）"},"b37":{"start":"点「Start 开始」按钮","keys":"按空格键下抓","goal":"抓斗摆到金块正上方时按空格，伸出抓住金块并收回"},"b38":{"start":"点「Start 开始」按钮","keys":"同时按住 D 和 K，再同时松开","goal":"下缘到线时按 D+K（间隔 250 毫秒内），上缘离线时松开，完整按住约 2 秒"},"b39":{"start":"点「Start 开始」按钮","keys":"按住空格键蓄力后松手","goal":"蓄力条到金色 65% 刻度（±5%）时松手，把小鸟发射落在平台上"},"c1":{"start":"点「Start 开始」按钮","keys":"按住 A / D 移动 · 按 Space 跳跃（可跳两次）","goal":"二段跳越过深渊，从上方落到右侧对岸平台上"},"c3":{"start":"点「Start 开始」按钮","keys":"按 Space 起跳","goal":"记住闪现的隐藏平台位置，跑到边缘前起跳落上去"},"c12":{"start":"点「Start 开始」按钮","keys":"按 ← / → 调炮管仰角 · 按 Space 发射","goal":"把炮口对准更高的那架敌机（±3°）并在倒计时内发射"},"c26":{"start":"点「Start 开始」按钮","keys":"滑行中按 Space 反向跳离墙面","goal":"反向跳后从上方落到对面的高台屋顶上"},"c27":{"start":"点「Start 开始」按钮","keys":"按 Space 向前冲刺（dash）","goal":"在舱门缝隙张开时冲刺，从门缝中间穿过去"},"c28":{"start":"点「Start 开始」按钮","keys":"按 Space 挥刀格挡","goal":"在剑尖飞到身前时挥刀，让刀身扫中剑尖"},"c29":{"start":"点「Start 开始」按钮","keys":"按住鼠标沿要切的方向拖出一刀","goal":"在西瓜落地前，用划出的线段切中西瓜"},"c30":{"start":"点「Start 开始」按钮","keys":"按 Space 起跳","goal":"在苹果飞到身前时起跳，让身体升到苹果上方"},"c31":{"start":"点「Start 开始」按钮","keys":"按 ↓（方向键下）下蹲躲矿车","goal":"在矿车冲到时下蹲，让身体顶低于车底横梁"},"c32":{"start":"点「Start 开始」按钮","keys":"按 Space 挥棒","goal":"在球飞到球棒跟前时挥棒击中它"},"c33":{"start":"点「Start 开始」按钮","keys":"按 R 松绳释放","goal":"在摆到右侧时释放，让落点越过深渊到对岸"},"c34":{"start":"点「Start 开始」按钮","keys":"按 R 翻滚卸力","goal":"在被击飞落地前后 ±130ms 内按 R，翻滚后站稳"},"c35":{"start":"点「Start 开始」按钮","keys":"按 ↑ / ↓ 上下移动战机","goal":"引导导弹贴边擦过战机（距离 20~48px）甩掉锁定"},"c36":{"start":"点「Start 开始」按钮","keys":"按 J 松手出手","goal":"在跳到最高点前后 ±100ms 按 J，把球投进篮筐"},"c37":{"start":"点「Start 开始」按钮","keys":"按 J 结束漂移","goal":"在车头转到出弯方向 ±30° 内松键"},"c38":{"start":"点「Start 开始」按钮","keys":"按 Space 起跳","goal":"起跳让弧线越过障碍，并落在障碍后方"},"c39":{"start":"点「Start 开始」按钮","keys":"按 J 收身转正落地","goal":"转满一周（累计 ≥300°）后身体转正时按 J"},"d1":{"start":"点「Start 开始」按钮","keys":"鼠标点击敌人","goal":"在敌人冒头停留的 1 秒内用鼠标点中他"},"d3":{"start":"点「Start 开始」按钮","keys":"移动鼠标控制篮子左右移动","goal":"在星星落地前把篮子移到它的落点下方接住它"},"d4":{"start":"点「Start 开始」按钮","keys":"把鼠标移到鬼火上点击","goal":"在鬼火消散前点击它，把它接引归去"},"d7":{"start":"点「Start 开始」按钮","keys":"按住宝石拖动，把它拖进宝箱","goal":"在宝石和宝箱消失前，把宝石拖进宝箱完成封印"},"d14":{"start":"点「Start 开始」按钮","keys":"按住核心，沿发光圆环拖动光标","goal":"在核心消散前绕它画满一整圈，顺逆时针皆可"},"d15":{"start":"点「Start 开始」按钮","keys":"把光标移到目标上并保持悬停","goal":"让光标停在目标上保持 0.5 秒完成锁定"},"d23":{"start":"点「Start 开始」按钮","keys":"点击发光的金色光球","goal":"在光球消散前点中当前处于金色的那一个"},"d27":{"start":"点「Start 开始」按钮","keys":"A/D 左右移动，W 或空格跳跃","goal":"在蘑菇怪逃走前跳到它头上，把它踩扁"},"d28":{"start":"点「Start 开始」按钮","keys":"按空格挥刀格挡（W 或 ↑ 亦可）","goal":"在飞剑劈到身前的瞬间挥刀把它弹开"},"d29":{"start":"点「Start 开始」按钮","keys":"按空格处决","goal":"在守卫完全站直的瞬间按空格处决它"},"d30":{"start":"点「Start 开始」按钮","keys":"按空格击发","goal":"在散布圈包住敌人且未侵入人质区时击发"},"d31":{"start":"点「Start 开始」按钮","keys":"按空格伸出爪子","goal":"在爪子转到宝物正上方时伸爪抓住宝物"},"d32":{"start":"点「Start 开始」按钮","keys":"按空格水平投出飞刀","goal":"在空隙转到左侧投刀口时投刀穿过去击中标靶"},"d33":{"start":"点「Start 开始」按钮","keys":"按空格敲击鼓面","goal":"每个拍点弹出的瞬间按空格，把 8 拍全部命中"},"d34":{"start":"点「Start 开始」按钮","keys":"A/D 或 ←/→ 左右移动","goal":"持续移动躲开全部子弹，让它们都从身边飞过去"},"d35":{"start":"点「Start 开始」按钮","keys":"WASD 移动","goal":"趁缺口出现时穿过去，逃出幽影包围圈"},"d36":{"start":"点「Start 开始」按钮","keys":"按 J 翻滚","goal":"在幽影暴冲逼近的瞬间翻滚，从它下面躲过去"},"d37":{"start":"点「Start 开始」按钮","keys":"按 J 或鼠标点击扣扳机","goal":"在准星覆盖目标的瞬间扣扳机"}};
+
+const GAMES = [
+  "a/A1_Concentration","a/A12_Cups_and_Balls","a/A14_Lily_Pad_Hopper","a/A16_Orbit_Station","a/A17_Neon_Lucky_Wheel","a/A21_Bouncing_Ball_Drop","a/A23_Mojo_Billiards","a/A24_Plinko_Drop","a/A31_Subitize_Count","a/A34_Vent_Peek_ID","a/A35_Expression_Flash","a/A36_Word_Lantern","a/A37_Arc_Recall","a/A38_Ghost_Zone_Escape","a/A39_Convenience_Discount","a/A40_HP_Status_Recall","a/A41_Kitchen_Order_Match","a/A42_Picross_Snapshot","a/A43_Card_Flash_ID","a/A44_Dobble_Blink","a/A45_Babel_Glyph","a/A46_Flash_Path",
+  "b/B1_Timed_Target","b/B4_Clock_Face","b/B7_Assembly_Line","b/B14_Beat_3","b/B15_Crossing_Guard","b/B20_Morse_Reply","b/B23_Combo_Sequence","b/B32_Multi_lane_Note_Drop","b/B36_Slide_Note","b/B37_Claw_Grab","b/B38_Dual_Hold","b/B39_Charge_Distance",
+  "c/C1_Double_Jump","c/C3_Sky_Hop","c/C12_Anti_Air_Gunnery","c/C26_Wall_Jump","c/C27_Air_Dash","c/C28_Parry","c/C29_Fruit_Slice","c/C30_Apple_Dodge","c/C31_Cave_Collapse","c/C32_Batter_Up","c/C33_Grapple_Swing","c/C34_Combat_Roll","c/C35_Graze_Dodge","c/C36_Green_Release","c/C37_Drift_Exit","c/C38_Parkour_Vault","c/C39_Trick_Landing",
+  "d/D1_Random_Enemy","d/D3_Catch_the_Star","d/D4_Chase_the_Wisp","d/D7_Drag_the_Gem","d/D14_Trace_the_Circle","d/D15_Hover_Lock_on","d/D23_Wandering_Flip","d/D27_Random_Stomp","d/D28_Random_Parry","d/D29_Random_Recovery","d/D30_Shotgun_Spread","d/D31_Random_Claw_Grab","d/D32_Variable_Speed_Knife_Throw","d/D33_Random_Drumroll","d/D34_Curving_Bullet_Dodge","d/D35_Shadow_Circle_Escape","d/D36_Erratic_Rush_Dodge","d/D37_Breath_Sway_Sniper_Shot"
+].map(p => ({
+  path: p,
+  cls: p[0],
+  // benchmark_id：目录名去掉下划线后的首段小写（A1_Concentration → a1、C34_Combat_Roll → c34）
+  id: p.split('/')[1].split('_')[0].toLowerCase(),
+  name: p.split('/')[1].replace(/_/g, ' ')
+}));
+
+const CLS_LABEL = {
+  a: 'A 类 · 视觉记忆 / continuous perception',
+  b: 'B 类 · 时机预判 / anticipatory action',
+  c: 'C 类 · 组合补丁 / reproducible real-time',
+  d: 'D 类 · 持续随机 / stochastic real-time'
+};
+
+/* ---------------- 状态 ---------------- */
+let session = null;      // { name, idx, records[], startedAt, completed, savedAt }
+let cur = null;          // 当前游戏的记录对象
+let pollTimer = null;
+let gameStartTime = 0, lastAttemptStart = 0, prevAttempts = 0;
+// file:// 下父页面读不到 iframe 的 BENCH（独立 origin），页面加载即整页拦住，不给白玩的机会
+const IS_FILE = location.protocol === 'file:';
+
+/* ---------------- 工具 ---------------- */
+const $ = id => document.getElementById(id);
+const two = n => String(n).padStart(2, '0');
+function timeStr(d) {
+  return `${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())} ${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}`;
+}
+function save() {
+  if (!session) return;
+  session.savedAt = timeStr(new Date());
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(session)); } catch (e) { /* 隐私模式等：忽略 */ }
+}
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || typeof s.name !== 'string' || !Array.isArray(s.records)) return null;
+    return s;
+  } catch (e) { return null; }
+}
+function clearSaved() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) {} }
+
+/* ---------------- 入口 ---------------- */
+// 拦住：显示全屏遮罩并禁用一切入口（返回 true 表示已拦下）
+function blockUnderFile() {
+  if (!IS_FILE) return false;
+  $('fileBlocker').classList.remove('hidden');
+  $('startBtn').disabled = true;
+  $('nameInput').disabled = true;
+  $('resumeBtn').disabled = true;
+  return true;
+}
+
+function initEntry() {
+  if (blockUnderFile()) return;   // file://：不给进入评测的机会
+  const s = loadSaved();
+  if (s) {
+    const total = GAMES.length;
+    const doneN = s.records.length;
+    const skippedN = s.records.filter(r => r.skipped).length;
+    $('resumePanel').classList.remove('hidden');
+    if (s.completed) {
+      $('resumeTitle').textContent = '发现已完成的评测';
+      $('resumeInfo').innerHTML = `姓名：<b>${escapeHtml(s.name)}</b> · 已完成 ${doneN} / ${total} 个游戏（跳过 ${skippedN}）<br>保存时间：${s.savedAt || '—'}<br>可以直接查看结果并导出 CSV。`;
+      $('resumeBtn').textContent = '查看上次结果';
+    } else {
+      const nxt = GAMES[s.idx];
+      $('resumeInfo').innerHTML = `姓名：<b>${escapeHtml(s.name)}</b> · 已完成 ${doneN} / ${total} 个（跳过 ${skippedN}）<br>下一个：第 ${s.idx+1} 个 · ${nxt ? nxt.name : '—'}<br>保存时间：${s.savedAt || '—'}`;
+      $('resumeBtn').textContent = '继续上次评测';
+    }
+  }
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function startNew() {
+  if (blockUnderFile()) return;   // 双保险
+  const name = $('nameInput').value.trim();
+  if (!name) return;
+  session = { name, idx: 0, records: [], startedAt: timeStr(new Date()), completed: false, savedAt: null };
+  clearSaved();
+  save();
+  enterPlay();
+}
+
+function resumeSession() {
+  if (blockUnderFile()) return;   // 双保险
+  const s = loadSaved();
+  if (!s) return;
+  session = s;
+  if (session.completed) { showResult(); return; }
+  if (session.idx >= GAMES.length) { session.completed = true; showResult(); return; }
+  enterPlay();
+}
+
+function discardSaved() {
+  clearSaved();
+  $('resumePanel').classList.add('hidden');
+}
+
+function enterPlay() {
+  if (blockUnderFile()) return;   // 第三道保险：任何路径都进不了评测页
+  $('entryPage').classList.add('hidden');
+  $('resultPage').classList.add('hidden');
+  $('playPage').classList.remove('hidden');
+  $('hudName').textContent = session.name;
+  loadGame();
+}
+
+/* ---------------- 评测流程 ---------------- */
+function loadGame() {
+  const g = GAMES[session.idx];
+  if (!g) { session.completed = true; save(); showResult(); return; }
+  updateHud();
+  cur = {
+    path: g.path, cls: g.cls, id: g.id, name: g.name,
+    success: null, skipped: false,
+    // attemptsCompleted = 协议 1.1 的 attempts_completed：已结算的完整尝试数（成功也 +1）
+    // ⇒ 成功时它【就是】「第几次成功」，不再需要 +1（旧实现按 0 基的失败计数换算，语义已失效）
+    attemptsCompleted: 0,
+    passAt1: false, passAt3: false, protocolVersion: '',
+    totalTime: 0, attemptDurations: [], difficulty: null, fun: null,
+    startedAt: timeStr(new Date()), endedAt: ''
+  };
+  prevAttempts = 0;
+  if (pollTimer) clearInterval(pollTimer);
+  const frame = $('gameFrame');
+  frame.src = g.path + '/index.html';
+  frame.onload = () => {
+    gameStartTime = Date.now();
+    lastAttemptStart = gameStartTime;
+    prevAttempts = 0;
+    cur.startedAt = timeStr(new Date());
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(pollBench, 100);
+    showTip(g);
+    try { frame.contentWindow.focus(); } catch (e) {}
+  };
+  save();   // 记住 idx，刷新后从当前游戏重测
+}
+
+function updateHud() {
+  const total = GAMES.length;
+  const doneN = session.records.length;
+  const g = GAMES[session.idx];
+  $('hudProg').textContent = `第 ${session.idx + 1} / ${total} 个`;
+  $('hudGame').textContent = g ? `${g.name} · ${CLS_LABEL[g.cls] || g.cls}` : '—';
+  $('barFill').style.width = (doneN / total * 100).toFixed(1) + '%';
+  const skippedN = session.records.filter(r => r.skipped).length;
+  const timed = session.records.filter(r => !r.skipped && r.totalTime > 0);
+  const avg = timed.length ? timed.reduce((s, r) => s + r.totalTime, 0) / timed.length : 60;
+  const remain = total - doneN;
+  const etaMin = avg * remain / 60;
+  $('hudStat').textContent = `已完成 ${doneN} / 剩余 ${remain}${skippedN ? `（跳过 ${skippedN}）` : ''} · 预计还需 ~${etaMin < 1 ? '<1' : etaMin.toFixed(0)} 分钟`;
+}
+
+function pollBench() {
+  const frame = $('gameFrame');
+  let bench = null;
+  try { bench = frame.contentWindow && frame.contentWindow.BENCH; }
+  catch (e) { return; }   // 跨 origin 读取失败：file:// 已在页面加载时拦住，这里静默返回
+  if (!bench || !cur || cur.endedAt) return;
+  if (bench.protocol_version) cur.protocolVersion = bench.protocol_version;
+
+  // 协议 1.1：attempts_completed = 已结算的完整尝试数（成功也 +1）。
+  // 它每 +1 即代表「一次尝试刚刚结算」，据此记录这一次尝试的时长。
+  // ⚠️ 旧实现读的是 1.0 的 bench.attempts（1.1 已改名），undefined > 0 恒为 false，
+  //    导致尝试次数与各次时长从未被记录——本处为修复点。
+  const done = bench.attempts_completed | 0;
+  if (done > prevAttempts) {
+    cur.attemptDurations.push((Date.now() - lastAttemptStart) / 1000);
+    cur.attemptsCompleted = done;
+    prevAttempts = done;
+    lastAttemptStart = Date.now();   // 下一次尝试从此刻开始计时（含回合间停顿，见结果页说明）
+  }
+
+  if (bench.passed === true) {
+    cur.success = true;
+    cur.passAt1 = bench.pass_at_1 === 1;
+    cur.passAt3 = bench.pass_at_3 === 1;
+    finishGame();                    // 本次尝试时长已在上面的增量分支记录，勿重复 push
+  } else if (bench.status === "failed") {
+    cur.success = false;
+    cur.passAt1 = bench.pass_at_1 === 1;
+    cur.passAt3 = bench.pass_at_3 === 1;
+    finishGame();
+  }
+}
+
+function finishGame() {
+  if (!cur || cur.endedAt) return;
+  clearInterval(pollTimer);
+  cur.totalTime = Math.round((Date.now() - gameStartTime) / 10) / 100;
+  cur.attemptDurations = cur.attemptDurations.map(t => Math.round(t * 10) / 10);
+  cur.endedAt = timeStr(new Date());
+  session.records.push(cur);
+  save();
+
+  const ok = cur.success;
+  $('ratingTitle').textContent = ok ? '成功 ✓' : '失败 ✗';
+  $('ratingSub').textContent = `${cur.name} · 第 ${cur.attemptsCompleted} 次${ok ? '成功' : '（3 次用完，失败）'} · 用时 ${cur.totalTime}s`;
+  resetRateOpts();
+  $('ratingModal').classList.remove('hidden');
+}
+
+function resetRateOpts() {
+  document.querySelectorAll('.rate-opts button').forEach(b => b.classList.remove('sel'));
+  $('nextBtn').disabled = true;
+}
+document.querySelectorAll('.rate-opts').forEach(group => {
+  group.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    group.querySelectorAll('button').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    if (group.id === 'diffOpts') cur.difficulty = +btn.dataset.v;
+    if (group.id === 'funOpts') cur.fun = +btn.dataset.v;
+    $('nextBtn').disabled = (cur.difficulty === null || cur.fun === null);
+  });
+});
+
+function nextGame() {
+  $('ratingModal').classList.add('hidden');
+  session.idx++;
+  save();
+  if (session.idx >= GAMES.length) { session.completed = true; save(); showResult(); return; }
+  loadGame();
+}
+
+/* ---------------- 跳过 / 暂停 ---------------- */
+function skipGame() {
+  if (!cur || cur.endedAt) return;
+  const nxt = GAMES[session.idx];
+  if (!confirm(`确认跳过「${nxt.name}」？\n该游戏会记为「跳过」，不计入成功率。`)) return;
+  clearInterval(pollTimer);
+  cur.skipped = true;
+  cur.success = null;
+  cur.totalTime = Math.round((Date.now() - gameStartTime) / 10) / 100;
+  cur.endedAt = timeStr(new Date());
+  session.records.push(cur);
+  session.idx++;
+  save();
+  if (session.idx >= GAMES.length) { session.completed = true; save(); showResult(); return; }
+  loadGame();
+}
+
+function pauseGame() {
+  save();
+  $('pauseSub').innerHTML = `进度已保存在本机浏览器。<br>已完成 ${session.records.length} / ${GAMES.length} 个。<br>可以直接关闭页面，下次打开本页可继续。`;
+  $('pauseModal').classList.remove('hidden');
+}
+function resumeFromPause() { $('pauseModal').classList.add('hidden'); }
+
+/* ---------------- 结果页 ---------------- */
+function showResult() {
+  if (session.records.length && session.idx >= GAMES.length) session.completed = true;
+  save();
+  $('playPage').classList.add('hidden');
+  $('entryPage').classList.add('hidden');
+  $('resultPage').classList.remove('hidden');
+  $('resultTitle').textContent = `${session.name} 的评测结果`;
+
+  const recs = session.records;
+  const done = recs.filter(r => !r.skipped);           // 跳过不计入成功率分母
+  const skippedN = recs.length - done.length;
+  const successN = done.filter(r => r.success).length;
+  const totalTime = recs.reduce((s, r) => s + r.totalTime, 0);
+  const avgAttempts = done.length ? done.reduce((s, r) => s + r.attemptsCompleted, 0) / done.length : 0;
+  const rated = recs.filter(r => r.difficulty !== null);
+  const avgDiff = rated.length ? rated.reduce((s, r) => s + r.difficulty, 0) / rated.length : 0;
+  const avgFun = rated.length ? rated.reduce((s, r) => s + r.fun, 0) / rated.length : 0;
+
+  $('summary').innerHTML = `
+    <div class="card"><div class="v">${recs.length} / ${GAMES.length}</div><div class="k">已完成游戏数</div></div>
+    <div class="card"><div class="v">${successN}</div><div class="k">成功数</div></div>
+    <div class="card"><div class="v">${done.length ? (successN / done.length * 100).toFixed(1) + '%' : '—'}</div><div class="k">成功率（跳过不计入）</div></div>
+    <div class="card"><div class="v">${skippedN}</div><div class="k">跳过数</div></div>
+    <div class="card"><div class="v">${(totalTime / 60).toFixed(1)}min</div><div class="k">总用时</div></div>
+    <div class="card"><div class="v">${done.length ? avgAttempts.toFixed(2) : '—'}</div><div class="k">平均尝试次数</div></div>
+    <div class="card"><div class="v">${rated.length ? avgDiff.toFixed(2) : '—'}</div><div class="k">平均难度自评</div></div>
+    <div class="card"><div class="v">${rated.length ? avgFun.toFixed(2) : '—'}</div><div class="k">平均趣味自评</div></div>`;
+
+  const tb = $('resultBody');
+  tb.innerHTML = recs.map((r, i) => `
+    <tr>
+      <td>${i + 1}</td><td>${escapeHtml(r.name)}</td><td>${r.cls}</td>
+      <td class="${r.skipped ? 'skip' : (r.success ? 'ok' : 'fail')}">${r.skipped ? '跳过' : (r.success ? '成功' : '失败')}</td>
+      <td>${r.success ? r.attemptsCompleted : '—'}</td>
+      <td>${r.totalTime}</td>
+      <td>${r.attemptDurations.join(' / ')}</td>
+      <td>${r.difficulty === null ? '—' : r.difficulty}</td><td>${r.fun === null ? '—' : r.fun}</td>
+    </tr>`).join('');
+}
+
+/* ---------------- 导出 ---------------- */
+function exportCSV() {
+  // 原 10 列顺序保持不变；新增列一律追加在后（便于与已收集的人类数据对照）
+  const header = ['姓名','序号','任务','类别','是否成功','第几次成功','总时长(s)','各次尝试时长(s)','难度自评','趣味自评',
+                  'benchmark_id','protocol_version','pass_at_1','pass_at_3','是否跳过','开始时间','结束时间'];
+  const lines = session.records.map((r, i) => [
+    session.name, i + 1, r.name, r.cls,
+    r.skipped ? '跳过' : (r.success ? '成功' : '失败'),
+    r.success ? r.attemptsCompleted : '',
+    r.totalTime,
+    '"' + r.attemptDurations.join(' / ') + '"',
+    r.difficulty === null ? '' : r.difficulty,
+    r.fun === null ? '' : r.fun,
+    r.id || '',
+    r.protocolVersion || '',
+    r.passAt1 ? 1 : 0,
+    r.passAt3 ? 1 : 0,
+    r.skipped ? '是' : '否',
+    r.startedAt || '',
+    r.endedAt || ''
+  ]);
+  const csv = [header.join(',')].concat(lines.map(l => l.join(','))).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${session.name}_评测结果.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ---------------- 操作引导提示卡 ---------------- */
+let tipTimer = null;
+function showTip(g) {
+  const t = TIPS[g.id || String(g.path).split('/')[1].split('_')[0].toLowerCase()];
+  if (!t) { $('tipCard').classList.add('hidden'); return; }
+  $('tipTitle').textContent = `${g.name} · ${CLS_LABEL[g.cls] || g.cls}`;
+  $('tipStart').textContent = t.start || '—';
+  $('tipKeys').textContent = t.keys || '—';
+  $('tipGoal').textContent = t.goal || '—';
+  $('tipCard').classList.remove('hidden');
+  if (tipTimer) clearTimeout(tipTimer);
+  tipTimer = setTimeout(() => $('tipCard').classList.add('hidden'), 5000);
+}
+
+/* ---------------- 缩放 ---------------- */
+let zoom = 1;
+function applyZoom(z) {
+  zoom = z;
+  const f = $('gameFrame');
+  f.style.transformOrigin = 'top left';
+  if (z === 1) { f.style.transform = ''; f.style.width = ''; f.style.height = ''; }
+  else { f.style.transform = `scale(${z})`; f.style.width = (100 / z) + '%'; f.style.height = (100 / z) + '%'; }
+  try { localStorage.setItem(ZOOM_KEY, String(z)); } catch (e) {}
+}
+
+/* ---------------- 启动 ---------------- */
+$('nameInput').addEventListener('input', () => { $('startBtn').disabled = IS_FILE || $('nameInput').value.trim() === ''; });
+$('resumeBtn').addEventListener('click', resumeSession);
+$('discardBtn').addEventListener('click', discardSaved);
+initEntry();
+// 「复制命令」：优先 Clipboard API，失败回退 execCommand（file:// 非安全上下文时常用）
+function copyServeCmd() {
+  const cmd = $('fbCmd').textContent;
+  const ok = () => { $('fbCopyHint').textContent = '已复制，去终端粘贴执行'; setTimeout(() => { $('fbCopyHint').textContent = ''; }, 3000); };
+  const fail = () => { $('fbCopyHint').textContent = '复制失败，请手动选中上面的命令复制'; };
+  const legacy = () => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const r = document.execCommand('copy'); document.body.removeChild(ta);
+      r ? ok() : fail();
+    } catch (e) { fail(); }
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd).then(ok).catch(legacy);
+      return;
+    }
+  } catch (e) {}
+  legacy();
+}
+$('fbCopy').addEventListener('click', copyServeCmd);
+$('tipClose').addEventListener('click', () => { $('tipCard').classList.add('hidden'); if (tipTimer) clearTimeout(tipTimer); });
+$('zoomSel').addEventListener('change', e => applyZoom(parseFloat(e.target.value)));
+try { const z0 = parseFloat(localStorage.getItem(ZOOM_KEY) || '1'); if (!isNaN(z0) && z0 !== 1) { $('zoomSel').value = String(z0); applyZoom(z0); } } catch (e) {}
+</script>
+</body>
+</html>

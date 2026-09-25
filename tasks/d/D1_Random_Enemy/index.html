@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Enemy 随机迎敌</title>
+<style>
+  :root { --bg1:#0f1520; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+  body {
+    background:var(--bg1);
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#e8eaf6; user-select:none; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  }
+  .status { font-size:30px; font-weight:800; min-height:36px; letter-spacing:.4px; }
+  .status.alert { color:#ffd166; } .status.win { color:#34d399; } .status.lose { color:#ff5c7a; }
+  canvas {
+    border-radius:16px; box-shadow:0 16px 44px rgba(0,0,0,.5);
+    border:1px solid rgba(255,255,255,.08); display:block; cursor:none;
+  }
+  .hint { font-size:13px; color:#7d86ab; letter-spacing:.5px; }
+  .tip { font-size:12px; color:#7d86ab; letter-spacing:.4px; }
+  .toast {
+    position:fixed; top:34px; left:50%; transform:translateX(-50%) translateY(-20px);
+    background:rgba(28,32,54,.92); border:1px solid rgba(255,255,255,.14); color:#fff;
+    padding:13px 28px; border-radius:30px; font-size:17px; font-weight:600; letter-spacing:.5px;
+    opacity:0; transition:all .35s; pointer-events:none; z-index:50; box-shadow:0 12px 34px rgba(0,0,0,.4);
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .overlay {
+    position:fixed; inset:0; background:rgba(10,12,24,.66); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity .3s;
+  }
+  .overlay.show { opacity:1; pointer-events:auto; }
+  .celeb-box {
+    background:linear-gradient(160deg,#fff,#f3f5fd); border-radius:22px; padding:44px 56px; text-align:center;
+    transform:scale(.7); transition:transform .35s cubic-bezier(.2,1.4,.4,1); box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  .overlay.show .celeb-box { transform:scale(1); }
+  .celeb-check { width:74px; height:74px; margin:0 auto 18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:40px; color:#fff; }
+  .celeb-check.ok { background:linear-gradient(150deg,#34d399,#0ea371); box-shadow:0 10px 26px rgba(52,211,153,.45); }
+  .celeb-check.fail { background:linear-gradient(150deg,#f87171,#dc2626); box-shadow:0 10px 26px rgba(248,113,113,.45); }
+  .celeb-title { font-size:30px; font-weight:800; color:#1f2937; }
+  .celeb-sub { font-size:15px; color:#6b7280; margin-top:6px; }
+  #confetti { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:110; }
+  .intro { position:fixed; inset:0; background:rgba(10,12,24,.94); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:200; }
+  .intro.hidden { display:none; }
+  .intro-box { background:linear-gradient(160deg,#fff,#f3f5fd); border-radius:22px; padding:44px 52px; text-align:center; max-width:560px; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+  .intro-title { font-size:28px; font-weight:800; color:#1f2937; }
+  .intro-rule { font-size:16px; color:#4b5563; margin-top:14px; line-height:1.55; }
+  .intro-start { margin-top:26px; padding:13px 44px; border-radius:30px; border:none; background:linear-gradient(150deg,#4c5baa 0%,#3a4684 100%); color:#fff; font-size:17px; font-weight:700; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.3); transition:transform .15s; }
+  .intro-start:hover { transform:translateY(-2px); }
+  .next-dots { margin:12px 0 14px; }
+  .next-dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin:0 5px; background:#d1d5db; }
+  .next-dot.on { background:#4c7dff; }
+
+</style>
+</head>
+<body>
+  <div class="status" id="status">Get ready… 准备…</div>
+  <canvas id="cv" width="800" height="460"></canvas>
+  <div class="tip">Click the enemy when it appears — only one shot  敌人出现时点击——只有一枪</div>
+  <div class="hint" id="hint">Attempt 0 / 3 尝试 0 / 3</div>
+
+  <div class="toast" id="toast"></div>
+  <div class="overlay" id="overlay">
+    <div class="celeb-box">
+      <div class="celeb-check ok">✓</div>
+      <div class="celeb-title">Success! 成功！</div>
+      <div class="celeb-sub">Task completed 任务完成</div>
+    </div>
+  </div>
+  <div class="overlay" id="failOverlay">
+    <div class="celeb-box">
+      <div class="celeb-check fail">✗</div>
+      <div class="celeb-title">Failed 失败</div>
+      <div class="celeb-sub">Out of attempts 尝试用完</div>
+    </div>
+  </div>
+  <div class="intro" id="rulesOverlay">
+    <div class="intro-box">
+      <div class="intro-title">Random Enemy 随机迎敌</div>
+      <div class="intro-rule">敌人从掩体后随机冒头并瞄准你，在他开枪前点中他；每次冒头只停留 1 秒。每次冒头<b>只有一枪</b>：点空就打偏了，只能等他还击。<br>An enemy pops up from behind a random cover and aims at you. Click him before he shoots — each enemy only stays up for 1 second. You get <b>only one shot</b> per pop-up: miss it and you must wait to be shot.</div>
+      <button class="intro-start" id="startBtn">Start 开始</button>
+    </div>
+  </div>
+    <div class="overlay" id="nextOverlay">
+    <div class="celeb-box">
+      <div class="celeb-title" id="nextTitle">Attempt 2 / 3 尝试 2 / 3</div>
+      <div class="next-dots" id="nextDots"></div>
+      <button class="intro-start" id="nextBtn">Next 下一轮</button>
+    </div>
+  </div>
+  <canvas id="confetti"></canvas>
+
+<script>
+(function () {
+  "use strict";
+  const MAX_ATTEMPTS = 3;
+  const WINDOW_MS = 1000;
+  const POP_MS = 260;
+  const BULLET_MS = 450;   // 我方子弹飞行动画时长（点空后：子弹飞行 → 敌人还击）
+  const GROUND_Y = 385;
+  const ENEMY_W = 46, ENEMY_H = 74;
+
+  // 掩体：低层（地面）+ 高层（高台），共 8 个，前后两层 + 高低两层
+  const BOXES = [
+    { x:105, w:64, h:44, type:"sandbag", baseY:GROUND_Y },
+    { x:192, w:54, h:74, type:"brick",   baseY:290 },   // 高台
+    { x:278, w:60, h:48, type:"crate",   baseY:GROUND_Y },
+    { x:365, w:54, h:78, type:"brick",   baseY:290 },   // 高台
+    { x:452, w:64, h:44, type:"sandbag", baseY:GROUND_Y },
+    { x:538, w:54, h:74, type:"brick",   baseY:290 },   // 高台
+    { x:624, w:60, h:48, type:"crate",   baseY:GROUND_Y },
+    { x:710, w:54, h:78, type:"brick",   baseY:290 },   // 高台
+  ];
+
+  const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  const statusEl = document.getElementById("status"), hintEl = document.getElementById("hint");
+  const toast = document.getElementById("toast");
+  const overlay = document.getElementById("overlay"), failOverlay = document.getElementById("failOverlay");
+  const confettiCv = document.getElementById("confetti");
+
+  // ==== Realtime GUI Bench 1.1 接口（checker 只读本对象评分）====
+  const BENCH = {
+    protocol_version: "realtime-gui-bench/1.1",
+    task: "random_enemy",
+    max_attempts: MAX_ATTEMPTS,      // 恒为 3（与 MAX_ATTEMPTS 同源，避免两处漂移）
+    attempts_completed: 0,           // 已结算的完整尝试数（成功也 +1）
+    passed: false,
+    status: "ready",                 // 初始必须 ready（点 Start 才转 running）
+    pass_at_1: 0,
+    pass_at_3: 0,
+    results: [],                     // 诊断字段（不参与评分）
+  };
+  window.BENCH = BENCH;
+  function syncURL(){ try{ window.history.replaceState(null,"","#task="+BENCH.task+"&attempts_completed="+BENCH.attempts_completed+"&passed="+(BENCH.passed?1:0)+"&status="+BENCH.status+"&pass_at_1="+BENCH.pass_at_1+"&pass_at_3="+BENCH.pass_at_3); }catch(e){} }
+  function setStatus(t,c){ statusEl.textContent=t; statusEl.className="status "+(c||""); }
+  function attemptLabel(){ return Math.min(BENCH.attempts_completed + 1, MAX_ATTEMPTS); }   // 当前这次尝试的序号（终态不外溢成 4）
+  function setHint(){ const n = attemptLabel(); hintEl.textContent="Attempt "+n+" / "+MAX_ATTEMPTS+"  尝试 "+n+" / "+MAX_ATTEMPTS; }
+  function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1400); }
+
+  let phase = "waiting";   // waiting | popping | out | bullet | shot | hit
+  let enemyBox = null, enemyVis = 0, windowEnd = 0, popStart = 0, appearAt = 0, shotAt = 0;
+  let mouseX = 400, mouseY = 200;
+  let shotFired = false;                       // 一枪制：本次冒头是否已开过枪（置位后不再接受任何点击）
+  let bulletAt = 0, bulletTo = { x: 400, y: 200 };
+
+  window.__dbg = function(){ return { phase, enemyX: enemyBox?enemyBox.x:null, enemyVis, rect: enemyBox&&phase==="out"?enemyRect():null, shotFired, attempts_completed: BENCH.attempts_completed, passed: BENCH.passed, status: BENCH.status }; };
+
+  function pickBox(){
+    // 避免与上一次出现在同一位置（且 3 次尝试内尽量不重复）
+    const recent = new Set(window.__lastBoxes || []);
+    const candidates = BOXES.filter(b => !recent.has(b.x));
+    const pool = candidates.length ? candidates : BOXES;
+    const b = pool[Math.floor(Math.random()*pool.length)];
+    window.__lastBoxes = (window.__lastBoxes || []).slice(-2).concat(b.x);
+    return b;
+  }
+
+  function scheduleEnemy(){
+    phase = "waiting"; enemyBox = pickBox(); enemyVis = 0;
+    shotFired = false;                                   // 新的一轮冒头：射击机会重置（一枪制）
+    appearAt = performance.now() + 600 + Math.random()*900;
+    setStatus("Get ready… 准备…","");
+  }
+  function popEnemy(){ phase = "popping"; popStart = performance.now(); }
+  function enemyOut(){ phase = "out"; windowEnd = performance.now() + WINDOW_MS; setStatus("Shoot! 开枪！","alert"); }
+
+  function enemyShoot(){
+    // 超时未开枪（完全不点）→ 敌人开枪（本轮 miss）；点空路径见 playerMiss()
+    phase = "shot"; shotAt = performance.now();
+    setStatus("Got hit 被击中！","lose");
+    settleMiss(800);
+  }
+
+  // 本轮 miss 的原子结算 + 视觉编排（动画只影响显示，不影响评分状态）
+  function settleMiss(visualDelay){
+    BENCH.results.push(false);
+    // —— 判定瞬间先原子写完 BENCH，再播动画（动画只影响显示，不影响评分状态）——
+    BENCH.attempts_completed += 1;
+    BENCH.pass_at_1 = 0; BENCH.pass_at_3 = 0; BENCH.passed = false;
+    const exhausted = BENCH.attempts_completed >= MAX_ATTEMPTS;
+    if (exhausted) BENCH.attempts_completed = MAX_ATTEMPTS;   // 第三次失败：钳到 3
+    BENCH.status = exhausted ? "failed" : "running";
+    setHint(); syncURL();
+    const d = visualDelay || 800;
+    if (exhausted) {
+      // 全部失败：已定稿为 failed，仅延迟显示失败画面（不提供第四次入口）
+      setTimeout(()=>{ failOverlay.classList.add("show"); }, d);
+      return;
+    }
+    // 下一轮（新的敌人）：BENCH 已写为 running，仅延迟显示重试入口
+    setTimeout(()=>{
+      if (BENCH.status !== "running") return;               // 终态冻结：期间已变终态则不再给入口
+      const n = attemptLabel();
+      document.getElementById("nextTitle").textContent = "Attempt " + n + " / " + MAX_ATTEMPTS + "  尝试 " + n + " / " + MAX_ATTEMPTS;
+      const _d = document.getElementById("nextDots"); _d.innerHTML = "";
+      for (let _i = 0; _i < MAX_ATTEMPTS; _i++) { const _s = document.createElement("span"); _s.className = "next-dot" + (_i < BENCH.attempts_completed ? " on" : ""); _d.appendChild(_s); }
+      document.getElementById("nextOverlay").classList.add("show");
+    }, d);
+  }
+
+  function playerMiss(p){
+    // 点空：立即锁定并开出一枪（子弹动画只影响表现），本轮结算为 miss，随后敌人还击
+    phase = "bullet";
+    bulletAt = performance.now();
+    bulletTo = { x: p.x, y: p.y };
+    setStatus("Missed! 打偏了…","lose");
+    settleMiss(BULLET_MS + 800);                            // 判定瞬间原子写 BENCH
+    setTimeout(()=>{ if (phase === "bullet"){ phase = "shot"; shotAt = performance.now(); setStatus("Got hit 被击中！","lose"); } }, BULLET_MS);
+  }
+
+  function onHit(){
+    if (phase !== "out" || BENCH.status !== "running") return;   // 终态冻结：不再接受会改变结果的操作
+    shotFired = true;                                            // 一枪制：开过枪即锁定
+    phase = "hit";
+    BENCH.results.push(true);
+    BENCH.attempts_completed += 1;                                  // 成功也 +1
+    BENCH.pass_at_1 = (BENCH.attempts_completed === 1) ? 1 : 0;     // 仅「第一次就成功」记 1
+    BENCH.pass_at_3 = 1;
+    BENCH.passed = true;
+    BENCH.status = "passed";
+    setStatus("Success 成功！","win"); syncURL(); celebrate();
+  }
+
+  function update(now){
+    if (phase === "waiting" && now >= appearAt) popEnemy();
+    else if (phase === "popping"){ enemyVis = Math.min(1,(now-popStart)/POP_MS); if(enemyVis>=1) enemyOut(); }
+    else if (phase === "out" && now >= windowEnd) enemyShoot();
+    // shot / hit 之后由 setTimeout 安排下一轮，update 不再触发 → attempts 不会自增
+  }
+
+  function enemyRect(){
+    const top = enemyBox.baseY - enemyBox.h - ENEMY_H;
+    return { x: enemyBox.x - ENEMY_W/2, y: top, w: ENEMY_W, h: ENEMY_H };
+  }
+
+  // ---- 渲染 ----
+  function drawSky(){
+    const g = ctx.createLinearGradient(0,0,0,GROUND_Y);
+    g.addColorStop(0,"#2a3550"); g.addColorStop(.6,"#5c6b8f"); g.addColorStop(1,"#c9b28a");
+    ctx.fillStyle=g; ctx.fillRect(0,0,800,GROUND_Y);
+  }
+  function drawMountains(){
+    ctx.fillStyle="#3d4a66";
+    ctx.beginPath(); ctx.moveTo(0,320);
+    ctx.lineTo(90,240); ctx.lineTo(170,300); ctx.lineTo(260,220); ctx.lineTo(360,310);
+    ctx.lineTo(450,235); ctx.lineTo(560,305); ctx.lineTo(660,225); ctx.lineTo(760,300); ctx.lineTo(800,280); ctx.lineTo(800,385); ctx.lineTo(0,385); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#333f59";
+    ctx.beginPath(); ctx.moveTo(0,350); ctx.lineTo(120,285); ctx.lineTo(240,350); ctx.lineTo(400,275); ctx.lineTo(560,350); ctx.lineTo(700,290); ctx.lineTo(800,345); ctx.lineTo(800,385); ctx.lineTo(0,385); ctx.closePath(); ctx.fill();
+  }
+  function drawGround(){
+    const g = ctx.createLinearGradient(0,GROUND_Y,0,460);
+    g.addColorStop(0,"#8a6d4a"); g.addColorStop(1,"#5f472f");
+    ctx.fillStyle=g; ctx.fillRect(0,GROUND_Y,800,460-GROUND_Y);
+    ctx.fillStyle="rgba(255,255,255,.05)"; ctx.fillRect(0,GROUND_Y,800,3);
+  }
+  function drawPlatform(b){
+    // 高台（土台）：baseY 到地面
+    const x0 = b.x - b.w/2 - 12, x1 = b.x + b.w/2 + 12;
+    const g = ctx.createLinearGradient(0,b.baseY,0,GROUND_Y);
+    g.addColorStop(0,"#a9825a"); g.addColorStop(1,"#7a5a3a");
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.roundRect(x0, b.baseY, x1-x0, GROUND_Y-b.baseY, 4); ctx.fill();
+    ctx.fillStyle="#4caf50"; ctx.fillRect(x0, b.baseY, x1-x0, 6);
+    ctx.strokeStyle="rgba(0,0,0,.2)"; ctx.lineWidth=1; ctx.strokeRect(x0, b.baseY, x1-x0, GROUND_Y-b.baseY);
+  }
+  function drawBox(b){
+    const x=b.x, y=b.baseY;
+    if (b.type==="sandbag"){
+      ctx.fillStyle="#c9a25e";
+      for(let i=0;i<3;i++){ ctx.beginPath(); ctx.ellipse(x, y-8-i*14, b.w/2-3, 9, 0, 0, 7); ctx.fill(); }
+      ctx.fillStyle="#a8844a";
+      for(let i=0;i<3;i++){ ctx.beginPath(); ctx.ellipse(x, y-8-i*14, b.w/2-3, 9, 0, Math.PI, 0); ctx.fill(); }
+    } else if (b.type==="crate"){
+      const g=ctx.createLinearGradient(x-b.w/2,y-b.h,x+b.w/2,y);
+      g.addColorStop(0,"#b5824c"); g.addColorStop(1,"#7a5430");
+      ctx.fillStyle=g; ctx.fillRect(x-b.w/2, y-b.h, b.w, b.h);
+      ctx.strokeStyle="#5d3f22"; ctx.lineWidth=2; ctx.strokeRect(x-b.w/2, y-b.h, b.w, b.h);
+      ctx.beginPath(); ctx.moveTo(x-b.w/2,y-b.h/2); ctx.lineTo(x+b.w/2,y-b.h/2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x-b.w/2+4,y-b.h+4); ctx.lineTo(x+b.w/2-4,y-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x+b.w/2-4,y-b.h+4); ctx.lineTo(x-b.w/2+4,y-4); ctx.stroke();
+    } else { // brick
+      const g=ctx.createLinearGradient(x-b.w/2,y-b.h,x+b.w/2,y);
+      g.addColorStop(0,"#9a5b45"); g.addColorStop(1,"#6d3f2f");
+      ctx.fillStyle=g; ctx.fillRect(x-b.w/2, y-b.h, b.w, b.h);
+      ctx.strokeStyle="#4a2a1e"; ctx.lineWidth=1;
+      for(let r=0;r<4;r++){ const by=y-b.h+r*19; ctx.beginPath(); ctx.moveTo(x-b.w/2,by); ctx.lineTo(x+b.w/2,by); ctx.stroke();
+        const off=(r%2)?b.w/4:0;
+        for(let c=0;c<2;c++){ ctx.beginPath(); ctx.moveTo(x-b.w/2+off+c*(b.w/2),by); ctx.lineTo(x-b.w/2+off+c*(b.w/2),by+19); ctx.stroke(); } }
+    }
+  }
+  function drawEnemy(){
+    if (enemyVis <= 0 || !enemyBox) return;
+    const x = enemyBox.x;
+    const rise = enemyVis * ENEMY_H;
+    const top = enemyBox.baseY - enemyBox.h - rise;
+    const g=ctx.createLinearGradient(x-ENEMY_W/2,top,x+ENEMY_W/2,top+rise);
+    g.addColorStop(0,"#d23c2e"); g.addColorStop(1,"#9e241a");
+    ctx.fillStyle=g; ctx.beginPath(); ctx.roundRect(x-ENEMY_W/2, top, ENEMY_W, rise, 8); ctx.fill();
+    const headR=17, headCY = top + headR - 2;
+    ctx.fillStyle="#e8b28c"; ctx.beginPath(); ctx.arc(x, headCY, headR, 0, 7); ctx.fill();
+    ctx.fillStyle="#2c3e50"; ctx.beginPath(); ctx.arc(x, headCY-6, headR+2, Math.PI, 0); ctx.fill();
+    ctx.fillRect(x-headR-2, headCY-8, (headR+2)*2, 5);
+    ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(x-6,headCY,4,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(x+6,headCY,4,0,7); ctx.fill();
+    ctx.fillStyle="#111"; ctx.beginPath(); ctx.arc(x-6,headCY,2,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(x+6,headCY,2,0,7); ctx.fill();
+    if (enemyVis >= 1){
+      ctx.strokeStyle="#333"; ctx.lineWidth=4; ctx.lineCap="round";
+      ctx.beginPath(); ctx.moveTo(x+10, top+26); ctx.lineTo(x+10, top+34); ctx.stroke();
+      if (phase==="shot"){ ctx.fillStyle="#ffd166"; ctx.beginPath(); ctx.arc(x+10, top+37, 5, 0, 7); ctx.fill(); }
+    }
+  }
+  function drawCrosshair(){
+    ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.shadowColor="rgba(0,0,0,.6)"; ctx.shadowBlur=3;
+    ctx.beginPath(); ctx.arc(mouseX,mouseY,14,0,7); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mouseX-26,mouseY); ctx.lineTo(mouseX-9,mouseY); ctx.moveTo(mouseX+9,mouseY); ctx.lineTo(mouseX+26,mouseY);
+    ctx.moveTo(mouseX,mouseY-26); ctx.lineTo(mouseX,mouseY-9); ctx.moveTo(mouseX,mouseY+9); ctx.lineTo(mouseX,mouseY+26);
+    ctx.stroke();
+    ctx.shadowBlur=0; ctx.fillStyle="#ff4d4d"; ctx.beginPath(); ctx.arc(mouseX,mouseY,2.5,0,7); ctx.fill();
+  }
+  function render(){
+    drawSky(); drawMountains(); drawGround();
+    // 先画高台，再画掩体，最后画敌人
+    BOXES.forEach(b=>{ if (b.baseY < GROUND_Y) drawPlatform(b); });
+    BOXES.forEach(drawBox);
+    drawEnemy();
+    // 我方子弹（点空后的「开了枪但打偏」表现；判定已在点击瞬间原子写完，动画不改任何状态）
+    if (phase==="bullet"){
+      const t = Math.min(1, (performance.now()-bulletAt)/BULLET_MS);
+      const e = 1 - Math.pow(1-t, 2);                              // easeOutQuad
+      const sx = 400, sy = 445;                                    // 我方枪口（画布底部中央）
+      const tx = sx + (bulletTo.x-sx)*e, ty = sy + (bulletTo.y-sy)*e;
+      const px = sx + (bulletTo.x-sx)*Math.max(0, e-0.28), py = sy + (bulletTo.y-sy)*Math.max(0, e-0.28);
+      ctx.strokeStyle = "rgba(255,214,102,"+(0.9*(1-0.4*t))+")"; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(tx,ty); ctx.stroke();
+      ctx.fillStyle = "#ffe08a"; ctx.beginPath(); ctx.arc(tx,ty,4.5,0,7); ctx.fill();
+      const mt = Math.max(0, 1-(performance.now()-bulletAt)/130);  // 枪口火光
+      if (mt>0){ ctx.fillStyle="rgba(255,236,150,"+(0.95*mt)+")"; ctx.beginPath(); ctx.arc(sx,sy,6+16*mt,0,7); ctx.fill(); }
+    }
+    if (phase==="shot"){
+      const a=Math.max(0,1-(performance.now()-shotAt)/800);
+      ctx.fillStyle="rgba(255,40,40,"+(a*0.35)+")"; ctx.fillRect(0,0,800,460);
+      // 单次失败提示
+      ctx.fillStyle="rgba(255,255,255,"+a+")"; ctx.font="700 42px Arial"; ctx.textAlign="center";
+      ctx.fillText("MISS 未命中", 400, 120);
+    }
+    drawCrosshair();
+  }
+
+  function frame(now){ update(now); render(); requestAnimationFrame(frame); }
+
+  function canvasPos(e){ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*(cv.width/r.width), y:(e.clientY-r.top)*(cv.height/r.height)}; }
+  cv.addEventListener("mousemove",(e)=>{ const p=canvasPos(e); mouseX=p.x; mouseY=p.y; });
+  cv.addEventListener("click",(e)=>{
+    const p=canvasPos(e); mouseX=p.x; mouseY=p.y;
+    // 一枪制：每次冒头只有一次射击机会——第一次点击即开枪，之后（含点空）锁定，不再接受任何点击
+    if (phase !== "out" || BENCH.status !== "running" || shotFired) return;
+    shotFired = true;
+    const r=enemyRect();
+    if (p.x>=r.x && p.x<=r.x+r.w && p.y>=r.y && p.y<=r.y+r.h) onHit();
+    else playerMiss(p);
+  });
+
+  function celebrate(){ overlay.classList.add("show"); launchConfetti(); }
+  function launchConfetti(){
+    confettiCv.width=innerWidth; confettiCv.height=innerHeight;
+    const ctx=confettiCv.getContext("2d");
+    const colors=["#34d399","#7c5cff","#f6c453","#ff5c7a","#4c7dff","#f59e0b"];
+    const parts=[];
+    for(let i=0;i<160;i++) parts.push({x:Math.random()*confettiCv.width,y:-20-Math.random()*confettiCv.height*.5,w:6+Math.random()*7,h:8+Math.random()*8,vy:2+Math.random()*4,vx:-1.5+Math.random()*3,rot:Math.random()*Math.PI,vr:-.15+Math.random()*.3,c:colors[i%6]});
+    const t0=performance.now();
+    (function tick(now){
+      ctx.clearRect(0,0,confettiCv.width,confettiCv.height); let alive=false;
+      parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; if(p.y<confettiCv.height+30) alive=true;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+      if(alive && now-t0<3200) requestAnimationFrame(tick); else ctx.clearRect(0,0,confettiCv.width,confettiCv.height);
+    })(t0);
+  }
+
+  // 阻止空格/方向键/Tab 触发页面滚动、刷新、焦点切换
+  // P1 补漏（2026-09-22）：Enter 与 Space 都是浏览器的默认「按钮激活键」——聚焦中的 <button>
+  //（开始/下一轮按钮）会被它们直接激活，从而绕过「开始/重开只允许鼠标点击」。此处对整页显式
+  // 阻止这两类键的默认行为；preventDefault 只拦浏览器默认动作，不影响游戏自身的按键逻辑
+  //（jump / parry / execute / fire / grab / throw / hit / roll / shoot 仍由下面的处理函数触发）。
+  window.addEventListener("keydown",(e)=>{
+    const kc = e.keyCode || e.which || 0;
+    if (e.key === "Enter" || kc === 13 || e.code === "Space" || e.key === " " || kc === 32) {
+      const t = e.target, tag = t && t.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;   // 输入控件不拦（本类游戏无输入控件，保险起见）
+      e.preventDefault();
+    }
+  });
+  window.addEventListener("keydown",(e)=>{
+    const kc = e.keyCode||e.which||0;
+    if (kc === 32 || (kc >= 37 && kc <= 40) || kc === 9) e.preventDefault();
+  });
+
+  setHint(); syncURL();
+  document.getElementById("startBtn").addEventListener("click", () => {
+    if (BENCH.status !== "ready") return;                  // 只有 ready 能开局
+    document.getElementById("rulesOverlay").classList.add("hidden");
+    BENCH.status = "running"; syncURL();                    // 开始第一次尝试（不消耗机会）
+    scheduleEnemy();
+    showToast("Attempt 1 / " + MAX_ATTEMPTS + "  尝试 1 / " + MAX_ATTEMPTS);
+    requestAnimationFrame(frame);
+  });
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    if (BENCH.status !== "running") return;                 // 终态冻结：没有第四次入口
+    document.getElementById("nextOverlay").classList.remove("show");
+    scheduleEnemy();
+    showToast("Attempt " + attemptLabel() + " / " + MAX_ATTEMPTS + "  尝试 " + attemptLabel() + " / " + MAX_ATTEMPTS);
+  });
+})();
+</script>
+</body>
+</html>

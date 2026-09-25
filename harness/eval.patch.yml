@@ -1,0 +1,15 @@
+# cu-eval —— 评测会话覆盖层（`dsh --profile headless --patch <本文件> "<task>"`）
+#
+# 这是**进程级**覆盖层：只影响这一次 headless 调用，不写进任何 profile 或 settings，
+# 也不影响正在运行的 web 实例。
+- insert:
+    - id: cu-eval-guard
+      name: /home/administrator/dsh-cu-eval/plugin-eval-guard.mjs
+      config:
+        promptFile: /home/administrator/dsh-cu-eval/prompt-system.md
+        # 技能正文：取自**插件自带**的 skills/（评测环境的插件是从 GitHub clone 的 ⇒ 与仓库同步）。
+        # 为什么显式注入：评测环境里 skill 的目录式发现（$DSH_HOME/skills、profile 的 customSkillDirs）
+        # 2026-09-25 实测都没生效，会话的 available_skills 为空；而"把对外那份 SKILL.md 交给模型"
+        # 才是要测的东西 ⇒ 由 guard 直接注入该文件。
+        skillFile: /home/administrator/dsh-lab/plugins/dsh-real-time-computer-use/skills/computer-use/SKILL.md
+        order: 5
