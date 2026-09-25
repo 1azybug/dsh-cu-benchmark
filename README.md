@@ -169,13 +169,17 @@ In the documented run: **0 tasks were lost to infrastructure** (no `error` field
 61 of the 69 tasks were executed in this run; the other 8 already had results from earlier runs on
 the same day and were skipped (resume mode). Aggregated over all 69 tasks:
 
-| Group | Passed | Rate |
+| Group | pass@1 | pass@3 |
 |---|---|---|
-| `a` | 21 / 22 | 95 % |
-| `b` | 11 / 12 | 92 % |
-| `c` | 9 / 14 | 64 % |
-| `d` | 2 / 18 | 11 % |
-| **total** | **44 / 69** | **63.8 %** |
+| `a` | 21 / 22 | 21 / 22 |
+| `b` | 5 / 12 | 11 / 12 |
+| `c` | 1 / 14 | 9 / 14 |
+| `d` | 0 / 18 | 2 / 18 |
+| **total** | **27 / 69 (39.1 %)** | **44 / 69 (63.8 %)** |
+
+A task counts as **pass@1** when it is solved on the first attempt, and as **pass@3** when it is solved
+within the three attempts the pages allow. The two criteria used — the page's own `pass_at_1` hash
+field (present on 62 tasks) and "`passed` with `attemptsCompleted == 1`" — agree on **every** task.
 
 * Independent audit: **NOT_CHEAT 68, UNCERTAIN 1, CHEAT 0** — i.e. no task was solved by bypassing
   the GUI or by reading the page's own state.
