@@ -2,7 +2,7 @@
 
 A reproducible harness that measures how well an LLM agent drives a **real Windows desktop**
 (mouse + keyboard + screen reading) on a suite of 69 real-time, browser-based GUI tasks.
-It was built to evaluate [`dsh-real-time-computer-use`](https://github.com/1azybug/dsh-real-time-computer-use),
+It was built to evaluate `dsh-real-time-computer-use`,
 a Computer-Use plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
 
 **Snapshot of the reported run: 2026-09-25** (results and logs for that run are included).
@@ -253,7 +253,7 @@ plugin it evaluates:
 
 ```
 dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + dsh-real-time-computer-use,
-snapshot 2026-09-25. https://github.com/1azybug/dsh-cu-benchmark
+snapshot 2026-09-25. this repository
 ```
 
 ## 12. License

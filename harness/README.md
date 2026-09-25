@@ -124,7 +124,7 @@ node run-c-tasks.mjs --keep-open         # 跑完不关 Chrome/服务
 | 位置 | 角色 | 怎么更新 |
 |---|---|---|
 | `~/dsh-lab/plugins/dsh-real-time-computer-use` | **试验区 = 开发主场（也是评测实际运行的那份）** | 改这里 → `git commit && git push` |
-| GitHub `1azybug/dsh-real-time-computer-use` | 权威发布 | 由试验区推送 |
+| GitHub `dsh-real-time-computer-use` | 权威发布 | 由试验区推送 |
 | `~/.dsh/plugins/dsh-computer-use` | 本机部署 | **不要动**（主人明令） |
 
 ⚠️ **历史事故（为什么立这条规矩）**：评测目录长期**只被手工 `cp` 覆盖个别文件**（exe / 配置 / lib），

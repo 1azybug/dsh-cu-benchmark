@@ -8,8 +8,7 @@ abstract: >-
   and per-frame capture-timing verification.
 type: software
 authors:
-  - alias: "1azybug"
-repository-code: "https://github.com/1azybug/dsh-cu-benchmark"
+  - alias: "Anonymous"
 version: "2026-09-25"
 date-released: "2026-09-25"
 license: MIT
