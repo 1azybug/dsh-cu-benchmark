@@ -5,7 +5,7 @@ A reproducible harness that measures how well an LLM agent drives a **real Windo
 It was built to evaluate [`dsh-real-time-computer-use`](https://github.com/1azybug/dsh-real-time-computer-use),
 a Computer-Use plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
 
-**Snapshot of the reported run: 2026-09-25** (results, trajectories and logs for that run are included).
+**Snapshot of the reported run: 2026-09-25** (results and logs for that run are included).
 
 ---
 
@@ -16,7 +16,7 @@ a Computer-Use plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deep
 | `harness/` | The evaluation harness itself (Node.js + bash): task runner, hard tool-surface guard, system prompt given to the model, audit prompt, video tool, and a Chinese run-book (`harness/README.zh.md`) |
 | `harness/results/` | One JSON per task (`<task>.json`) plus `summary.json` for the documented run |
 | `harness/RESULTS-20260925.md` | Human-readable result report (group tables, failure list, per-task table) |
-| `harness/trajectories/` | Text-only trajectories (one `.txt` per task) — the exact input the independent auditor sees |
+| — | Text-only trajectories (one `.txt` per task) are **not published** — see §5.5 |
 | `windows-tools/` | Windows-side helpers the harness drives over stdio: Chrome DevTools-Protocol client, foreground-window helper, window-state probe |
 | `plugin-config/` | The *deployment* configuration used for the evaluation (plugin config + profile patch layer). Paths inside are machine-specific — see §9.2 |
 
@@ -117,6 +117,12 @@ only) is asked to judge whether the agent solved the task legitimately, using
 `harness/prompt-auditor.md`. It returns one of `NOT_CHEAT`, `CHEAT`, `CHEAT_ATTEMPT`, `UNCERTAIN`
 with a confidence and evidence. The auditor never sees the live screen.
 
+**The trajectories themselves are not released with this repository.** They are the model's raw
+reasoning text, and while the agent works they record whatever it happens to read off the screen —
+including unrelated windows and browser tabs of the host machine. Only the audit **labels** are
+published (see `harness/results/*.json`); the trajectory files can be made available on request for
+review purposes.
+
 ### 5.6 No per-task timeout
 Tasks run until the agent finishes on its own (`--timeout 0`). Real-time games end themselves when
 the attempts are exhausted.
@@ -215,7 +221,8 @@ bash harness/run-all.sh
 bash harness/run-one.sh C30
 ```
 
-Outputs: `results/<task>.json` (+ `summary.json`), `trajectories/<task>.txt`,
+Outputs: `results/<task>.json` (+ `summary.json`), `trajectories/<task>.txt` (written locally by the
+harness but **not** part of this repository) ,
 one mp4 recording per task in the configured recording directory.
 
 ---
@@ -234,6 +241,8 @@ one mp4 recording per task in the configured recording directory.
 5. **Task count**: 69 tasks, 4 groups; the `d` group (random/adversarial) is where the agent fails
    most. Any claim about "real-time GUI performance" should be read per group.
 6. **Videos** (325 MB for this run) are not stored in the repository.
+7. **Trajectories are not published** (§5.5): they contain raw model reasoning together with whatever
+   the agent read off the screen, so only the audit labels are released.
 
 ---
 
