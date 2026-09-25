@@ -181,8 +181,10 @@ A task counts as **pass@1** when it is solved on the first attempt, and as **pas
 within the three attempts the pages allow. The two criteria used — the page's own `pass_at_1` hash
 field (present on 62 tasks) and "`passed` with `attemptsCompleted == 1`" — agree on **every** task.
 
-* Independent audit: **NOT_CHEAT 68, UNCERTAIN 1, CHEAT 0** — i.e. no task was solved by bypassing
-  the GUI or by reading the page's own state.
+* Independent audit: **NOT_CHEAT 69, CHEAT 0** — no task was solved by bypassing the GUI or by reading
+  the page's own state. (One task's audit output was not valid JSON, so it was scored `UNCERTAIN` in the
+  first pass; re-running the audit on the same trajectory returned `NOT_CHEAT` with confidence 0.97 —
+  the original record is kept as `auditOriginal` in `harness/results/C34_Combat_Roll.json`.)
 * Wall-clock for the 61 tasks executed in this run: **4.5 hours** (mean ≈ 4.4 min/task).
 * Infrastructure errors: **0**.
 
