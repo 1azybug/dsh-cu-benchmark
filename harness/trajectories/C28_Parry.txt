@@ -790,13 +790,13 @@ Now let me observe the result.(tool-call)
 
 What happened?! The game window is gone from the foreground. It seems my type_text(" ") or one of the space presses did something that switched windows? Or... hmm.
 
-Wait, look at the browser: it's at 127.0.0.1:3080 with a "DSH 本地构建" chat UI. The tabs include "新标签页", "On the Capability Boundaries...", "Bot Formatting Instructions", "财神到", "哔哩哔哩", "1az..." and in the second window the tabs include "1azybug/dsh-real-time-com", another "1azybug/dsh-real-time-com", "PackyAPI", "你是「清欢」，这是一个属于 ..."
+Wait, look at the browser: it's at 127.0.0.1:3080 with a "DSH 本地构建" chat UI. The tabs include "新标签页", "[redacted-tab]", "[redacted-tab]", "[redacted-tab]", "[redacted-tab]", "1az..." and in the second window the tabs include "1azybug/dsh-real-time-com", another "1azybug/dsh-real-time-com", "[redacted]", "你是「[redacted-agent]」，这是一个属于 ..."
 
 Hmm, so there are multiple Chrome windows. The previously foreground window (the game "Parry 弹反") is not in the foreground now. And there's a "新标签页" (new tab) — did something open a NEW TAB?!
 
 Uh oh. My space presses might have triggered something. Or... hmm. Also possible: the harness's other sessions/monitors are manipulating the desktop concurrently ("多会话并发时会被别人挪走").
 
-Hmm, wait. The 2nd block (r0c1) shows a Chrome window with tabs including "1azybug/dsh-real-time-com" and "PackyAPI" and "你是「清欢」，这是一个属于..." — and the address bar area. The third tab "PackyAPI"...
+Hmm, wait. The 2nd block (r0c1) shows a Chrome window with tabs including "1azybug/dsh-real-time-com" and "[redacted]" and "你是「[redacted-agent]」，这是一个属于..." — and the address bar area. The third tab "[redacted]"...
 
 Hmm, and there's an extra tab bar. This looks like a DIFFERENT Chrome window (the one that was in the background).
 
@@ -886,7 +886,7 @@ Let me try to restore the game window and see the state. I need to bring "Parry 
 
 Hmm, but careful: is the game window actually the one with the tab "Parry 弹反"? The window title is "Parry 弹反" (the page title). Hmm, so it's a Chrome window whose active tab is the game.
 
-Hmm, wait: earlier there was a Chrome window with the game (t=376) and another Chrome window with tabs "1azybug/dsh-real-time-com", "PackyAPI", etc. And now there's a Chrome window "你是「清欢」，这是一个属于 — DSH 本地构建" (that's the chat UI at 127.0.0.1:3080 — "DSH 本地构建").
+Hmm, wait: earlier there was a Chrome window with the game (t=376) and another Chrome window with tabs "1azybug/dsh-real-time-com", "[redacted]", etc. And now there's a Chrome window "你是「[redacted-agent]」，这是一个属于 — DSH 本地构建" (that's the chat UI at 127.0.0.1:3080 — "DSH 本地构建").
 
 Hmm, and there's another "新标签页 - Google Chrome".
 
