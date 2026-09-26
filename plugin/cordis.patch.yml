@@ -18,7 +18,7 @@
         # 代价：单核 CPU 52.2% → 79.1%，录像体积 ×1.5（20 分钟约 670 MB；内存环预算 900 MB，窗口余量 1.34×）。
         frameIntervalMs: 16
         # 环形缓冲保留的帧数（h264 路径的窗口由 retain_s 与字节预算决定；本项只在 jpeg 逐帧路径生效）
-        frameCapacity: 40000
+        frameCapacity: 1800
         # JPEG 质量
         jpegQuality: 70
         # 帧的存储编码：h264（内存切片）| jpeg（逐帧写盘）。
@@ -29,12 +29,6 @@
         # 代价：取帧要现场解码（每帧几十毫秒），且 screen_frames 的 available 是"按时间窗解出的张数"
         # 而不是窗口内的真实帧数。改这里要重启 dsh web；screen_watch 的 codec 参数可临时覆盖。
         codec: h264
-        # 录像目录（Windows 形态）：非空时，每次 screen_watch start 都把采集帧**直接编码写入**该目录里的 mp4
-        # （一个连续编码器；时间戳取**真实采集时刻**，所以采集率波动时播放速度也不会被压缩）。
-        # 2026-09-24 作者批准：它替代"jpeg 逐帧落盘 + 事后合成"——同一次采集不再产生 6401 个 jpg 文件
-        # （实测 5 秒 ≈ 1.1 MB，而逐帧 jpeg 同段约 631 MB），采集帧率也保得住 30 fps。
-        # 留空 = 不录像。回看/剪辑见 ~/dsh-cu-eval/README.md。
-        recordDir: 'C:\Users\Administrator\dsh-cu-recordings'
         # 「**盯着画面等条件的自动触发**」类工具（wait_for_change / act_when）是否注册。
         # **保持 false**：作者 2026-09-22 明确——本机这套 Computer Use 正用于他论文的 GUI 评测，
         # 而该口径下"程序化地等某个视觉条件达成再自动动作"算作弊。允许的是「按已知信息定时等待 + 动作」

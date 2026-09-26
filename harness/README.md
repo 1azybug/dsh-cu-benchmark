@@ -1,4 +1,4 @@
-# dsh-cu-eval —— 在实时 GUI benchmark 上测 `dsh + dsh-real-time-computer-use`
+# dsh-cu-eval —— 在实时 GUI benchmark 上测 `dsh + computer-use-plugin`
 
 一套可复现的评测脚本：**每个任务一个全新会话**，只给 CU 工具，结果从环境读、并由独立 Agent 审计。
 覆盖 69 个任务（`a/` 22 + `b/` 12 + `c/` 17 + `d/` 18）。
@@ -101,7 +101,7 @@ node run-c-tasks.mjs --keep-open         # 跑完不关 Chrome/服务
 - CDP 助手：`C:\Users\Administrator\dsh-cu-eval-tools\cdp.mjs`（在 **Windows 侧**跑，stdin 一行 JSON 进、stdout 一行 JSON 出）
 - 评测 home：独立 `DSH_HOME=~/dsh-lab`（与日常 `~/.dsh` **完全隔离**）。进程环境另钉两项（`run-c-tasks.mjs` 的 `EVAL_ENV`）：
   `DSH_AGENTS_HOME=~/dsh-lab/.agents`（隔离本机 `~/.agents/skills`）、
-  `DSH_BUNDLED_SKILL_DIR=~/dsh-lab/plugins/dsh-real-time-computer-use/skills`。
+  `DSH_BUNDLED_SKILL_DIR=<仓库根>/plugin/skills`（插件随本仓库分发，见下节）。
 - **技能正文**：由 guard 注入插件自带的 `skills/computer-use/SKILL.md`（与 GitHub 同步那份）。
   评测环境里 skill 的**目录式发现实测不生效**（`$DSH_HOME/skills`、profile 的 `customSkillDirs` 都扫不到，
   会话的 `available_skills` 为空），所以改成显式注入，而不是依赖 `skill` 工具。
@@ -117,30 +117,17 @@ node run-c-tasks.mjs --keep-open         # 跑完不关 Chrome/服务
 | 「动作后自动给你截图」 | 这个 harness **不会自动附图**：要看结果必须主动调 `screen_grid`（`click` 可带 `verify:true`） |
 | 「同一 response 内动作串行、时序精确」 | 一致，保留 |
 
-## 插件同步（2026-09-25 定；跑前必读）
+## 插件（随本仓库分发）
 
-**规矩（主人 2026-09-25）**：**插件开发在试验区**；更新试验区插件后上传 GitHub；**不要改本机插件**。
-
-| 位置 | 角色 | 怎么更新 |
-|---|---|---|
-| `~/dsh-lab/plugins/dsh-real-time-computer-use` | **试验区 = 开发主场（也是评测实际运行的那份）** | 改这里 → `git commit && git push` |
-| GitHub `dsh-real-time-computer-use` | 权威发布 | 由试验区推送 |
-| `~/.dsh/plugins/dsh-computer-use` | 本机部署 | **不要动**（主人明令） |
-
-⚠️ **历史事故（为什么立这条规矩）**：评测目录长期**只被手工 `cp` 覆盖个别文件**（exe / 配置 / lib），
-源码没跟上 ⇒ 出现「exe 是 mf29、`CuHelper.cs` 却停在 mf26」的漂移；它的 SKILL.md 也落后一版（写 30 fps，实际 62.5 fps）。
-
-- `run-all.sh` / `run-one.sh` **每轮开跑前自动**把试验区对齐 GitHub（`git fetch && git reset --hard origin/main`）；
-  **有未提交改动就跳过**——不会清掉正在改的东西。`--dry-run` 不碰任何东西，因此也不做同步。
-- 评测专属的 `cordis.patch.yml`（`recordDir`、`frameCapacity: 40000`）已用
-  `git update-index --skip-worktree cordis.patch.yml` 标记 ⇒ git 不视它为本地改动、`reset --hard` 也不会覆盖它；
-  其余文件与 GitHub 逐字节一致。
-
-手动对齐一条命令（有未提交改动就先提交或 `stash`）：
+Computer Use 插件的完整代码内嵌在本仓库的 `plugin/` 目录（插件名 `computer-use-plugin`），
+与 harness 同版本分发，**无需独立 clone 或同步**。复现时把它 link 安装进评测 DSH_HOME：
 
 ```sh
-cd ~/dsh-lab/plugins/dsh-real-time-computer-use && git fetch origin && git reset --hard origin/main
+pnpm dsh plugin --profile <评测 profile> add link:"<本仓库>/plugin"
 ```
+
+评测部署用的 bundle patch 在 `plugin-config/cu-plugin.cordis.patch.yml`（把插件挂进 profile 的 HOST 层）；
+技能正文由 `eval.patch.yml` 的 `cu-eval-guard`（`skillFile`）直接注入，文件取自 `plugin/skills/computer-use/SKILL.md`。
 
 ## 失败兜底（2026-09-25 加；跑全量前看这节）
 

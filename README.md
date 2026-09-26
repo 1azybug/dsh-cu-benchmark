@@ -1,8 +1,8 @@
-# dsh-cu-benchmark — real-time GUI benchmark for DeepSeek Harness + `dsh-real-time-computer-use`
+# dsh-cu-benchmark — real-time GUI benchmark for DeepSeek Harness + `computer-use-plugin`
 
 A reproducible harness that measures how well an LLM agent drives a **real Windows desktop**
 (mouse + keyboard + screen reading) on a suite of 69 real-time, browser-based GUI tasks.
-It was built to evaluate `dsh-real-time-computer-use`,
+It was built to evaluate `computer-use-plugin`,
 a Computer-Use plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
 
 **Snapshot of the reported run: 2026-09-25** (results and logs for that run are included).
@@ -29,7 +29,7 @@ Task *pages* are not redistributed here (see §4).
 | Component | Value |
 |---|---|
 | Harness | `@deepseek-ai/dsh` **0.1.7-rc.1** (installed from the public npm registry) |
-| Plugin | `dsh-real-time-computer-use` **0.1.0**, commit **`93feea1`** (helper build **mf29**) |
+| Plugin | `computer-use-plugin` **0.1.0**（代码内嵌在本仓库 `plugin/`，helper 版本见 `plugin/helper/README.md`） |
 | Model | `deepseek-official` / **`deepseek-flash`**, `reasoningEffort: high`, `maxTokens: 256000` |
 | Agent profile | `headless` (one fresh process, hence one fresh session, per task) |
 | Capture | `frameIntervalMs: 16` ⇒ target **62.5 fps**, `codec: h264` (in-memory segments), `backend: dxgi`, JPEG quality 70 |
@@ -38,7 +38,7 @@ Task *pages* are not redistributed here (see §4).
 The evaluation home is a **separate `DSH_HOME`** (`~/dsh-lab` in our setup), fully isolated from the
 everyday `~/.dsh`: its own sessions, plugins, settings and agent skills. Two extra environment
 variables are pinned for the sessions so that nothing leaks in from the host machine
-(`DSH_AGENTS_HOME=<eval-home>/.agents`, `DSH_BUNDLED_SKILL_DIR=<eval-home>/plugins/dsh-real-time-computer-use/skills`).
+(`DSH_AGENTS_HOME=<eval-home>/.agents`, `DSH_BUNDLED_SKILL_DIR=<eval-home>/plugins/computer-use-plugin/skills`).
 
 ---
 
@@ -258,7 +258,7 @@ If you use this harness or these results, please cite the repository (see `CITAT
 plugin it evaluates:
 
 ```
-dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + dsh-real-time-computer-use,
+dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + computer-use-plugin,
 snapshot 2026-09-25. this repository
 ```
 

@@ -63,23 +63,10 @@ if [ -z "$PORT" ]; then
 fi
 echo "静态服务：http://localhost:$PORT/"
 
-# ── 1.5) 试验区插件对齐 GitHub ────────────────────────────────────────────
-# 规矩（主人 2026-09-25）：**插件开发在试验区** `~/dsh-lab/plugins/dsh-real-time-computer-use`，
-# 改完提交并 push；**本机 `~/.dsh/plugins/dsh-computer-use` 不动**。
-# 这里每轮开跑前把试验区对齐 GitHub；**有未提交的开发改动就跳过**（绝不清掉正在改的东西）。
-# 评测专属的 cordis.patch.yml 已用 `git update-index --skip-worktree` 标记，git 不碰它。
-PLUGIN_DIR="$HOME/dsh-lab/plugins/dsh-real-time-computer-use"
-if [ -d "$PLUGIN_DIR/.git" ]; then
-  DIRTY="$(cd "$PLUGIN_DIR" && git status --porcelain | grep -v 'cordis.patch.yml' | head -1)"
-  if [ -n "$DIRTY" ]; then
-    echo "⚠️ 试验区插件有未提交改动，跳过自动同步（先提交或 stash）"
-  elif ( cd "$PLUGIN_DIR" && https_proxy="${https_proxy:-http://172.22.48.1:7897}" git fetch -q origin \
-        && git reset -q --hard origin/main ); then
-    echo "试验区插件已对齐 GitHub：$(cd "$PLUGIN_DIR" && git log -1 --format='%h %s')"
-  else
-    echo "⚠️ 插件同步失败（网络？）——继续用当前版本"
-  fi
-fi
+# ── 1.5) Computer Use 插件（随本仓库分发） ────────────────────────────────
+# 插件完整代码内嵌在本仓库 plugin/ 目录（插件名 computer-use-plugin），与 harness 同版本分发，
+# 无需独立同步。复现时把它 link 安装进评测 DSH_HOME（见 README「复现」节）。
+PLUGIN_DIR="$EVAL_DIR/../plugin"
 
 # ── 2) 专用 Chrome（无地址栏） ─────────────────────────────────────────────
 if cdp '{"op":"status"}' | grep -q '"ok":true'; then

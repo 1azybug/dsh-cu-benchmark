@@ -60,22 +60,9 @@ TASK_DIR="$(ls "$SITE_WSL/c" | grep -E "^${TASK}(_|$)" | head -1)"
 [ -z "$TASK_DIR" ] && { echo "找不到任务：$TASK（可选：$(ls "$SITE_WSL/c" | tr '\n' ' ')）"; exit 2; }
 echo "任务：$TASK_DIR"
 
-# ── 2.5) 试验区插件对齐 GitHub ────────────────────────────────────────────
-# 规矩（主人 2026-09-25）：**插件开发在试验区** `~/dsh-lab/plugins/dsh-real-time-computer-use`，
-# 改完提交并 push；**本机 `~/.dsh/plugins/dsh-computer-use` 不动**。
-# 有未提交的开发改动就跳过同步（绝不清掉正在改的东西）；评测专属 cordis.patch.yml 由 skip-worktree 保护。
-PLUGIN_DIR="$HOME/dsh-lab/plugins/dsh-real-time-computer-use"
-if [ -d "$PLUGIN_DIR/.git" ]; then
-  DIRTY="$(cd "$PLUGIN_DIR" && git status --porcelain | grep -v 'cordis.patch.yml' | head -1)"
-  if [ -n "$DIRTY" ]; then
-    echo "⚠️ 试验区插件有未提交改动，跳过自动同步（先提交或 stash）"
-  elif ( cd "$PLUGIN_DIR" && https_proxy="${https_proxy:-http://172.22.48.1:7897}" git fetch -q origin \
-        && git reset -q --hard origin/main ); then
-    echo "试验区插件已对齐 GitHub：$(cd "$PLUGIN_DIR" && git log -1 --format='%h %s')"
-  else
-    echo "⚠️ 插件同步失败（网络？）——继续用当前版本"
-  fi
-fi
+# ── 2.5) Computer Use 插件（随本仓库分发） ────────────────────────────────
+# 插件完整代码内嵌在本仓库 plugin/ 目录（插件名 computer-use-plugin），与 harness 同版本分发。
+PLUGIN_DIR="$EVAL_DIR/../plugin"
 
 # ── 3) Chrome（没起就起，起了就导航） ───────────────────────────────────────
 if cdp '{"op":"status"}' | grep -q '"ok":true'; then
@@ -93,7 +80,7 @@ echo "页面就绪：$(echo "$STATUS" | head -c 160)"
 
 # ── 3.5) 前台 + 全屏：两条都成立才开跑 ──────────────────────────────────────
 # 只查「在前台」会漏掉「窗口只占半屏」——2026-09-25 实测：窗口是 normal 1265×1372，
-# 前台却是游戏页，于是半屏跑了一轮（主人一眼看出没全屏）。现在几何也算判据。
+# 前台却是游戏页，于是半屏跑了一轮（作者一眼看出没全屏）。现在几何也算判据。
 ACT="$(cdp '{"op":"activate"}')"
 echo "窗口：$ACT"
 echo "$ACT" | grep -q '"match":true'      || { echo "中止：游戏窗口不在前台 → $ACT"; exit 1; }

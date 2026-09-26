@@ -11,5 +11,5 @@
         # 为什么显式注入：评测环境里 skill 的目录式发现（$DSH_HOME/skills、profile 的 customSkillDirs）
         # 2026-09-25 实测都没生效，会话的 available_skills 为空；而"把对外那份 SKILL.md 交给模型"
         # 才是要测的东西 ⇒ 由 guard 直接注入该文件。
-        skillFile: /home/administrator/dsh-lab/plugins/dsh-real-time-computer-use/skills/computer-use/SKILL.md
+        skillFile: /home/administrator/dsh-cu-benchmark/plugin/skills/computer-use/SKILL.md
         order: 5

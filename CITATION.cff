@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this harness or its results, please cite it as below."
-title: "dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + dsh-real-time-computer-use"
+title: "dsh-cu-benchmark: real-time GUI benchmark for DeepSeek Harness + computer-use-plugin"
 abstract: >-
   A reproducible evaluation harness that measures how well an LLM agent drives a real Windows
   desktop (mouse, keyboard, screen reading) on 69 real-time browser GUI tasks, with a hard

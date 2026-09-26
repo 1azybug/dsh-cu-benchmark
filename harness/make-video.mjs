@@ -336,14 +336,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(cs).padStart(2, '0')}`
   }
 
-  // ---- 版面：思考固定在**右侧一栏**（主人 2026-09-24：「文字固定在右边」）----
+  // ---- 版面：思考固定在**右侧一栏**（作者 2026-09-24：「文字固定在右边」）----
   // 栏位只由画面内容带决定，不随思考条数变化 —— 视线不用在屏幕上找文字。
   const M = 24
   const actY = 10
   const lineUnits = Math.max(20, Math.floor((width - 2 * M) / FS_THINK))
   // 右栏栏位：优先贴「画面内容带」右侧的空白区；但内容带可能被判成整屏（画面铺满的游戏），
   // 那时 contentRight + 12 会落到画面之外——实测 2026-09-25 C1：59 条思考全在 x=2572、
-  // 画面宽 2560，一条也看不见（主人：「怎么没有思考」）。所以栏位必须**夹进画面**。
+  // 画面宽 2560，一条也看不见（作者：「怎么没有思考」）。所以栏位必须**夹进画面**。
   const rightW = Math.max(420, Math.round(width * 0.36))
   const rightX = Math.min(Math.max(M, bands.contentRight + 12), Math.max(M, width - M - rightW))
   const rightUnits = Math.max(12, Math.floor((width - M - rightX) / FS_THINK))
@@ -385,7 +385,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   // 思考：固定在右栏，**窗口 = 它被生成的那段时间**（上一条思考完成 → 本条完成）。
   // 旧写法是「本条完成 → 下一条完成」，它把每条思考整体**滞后一位**：屏幕上是"上一步在想什么"，
   // 而且内容与时长错配——实测本会话 61 字符的思考占 8.7 秒、而 6982 字符的思考只有 9.8 秒，
-  // 于是看起来"长段一闪而过、短句占着屏幕"（主人 2026-09-24 一眼看出「思考一下子就没」）。
+  // 于是看起来"长段一闪而过、短句占着屏幕"（作者 2026-09-24 一眼看出「思考一下子就没」）。
   thoughts.forEach((entry, index) => {
     const startMs = (index === 0 ? t0 : thoughts[index - 1].t) - t0
     const endMs = Math.min(entry.t - t0, durationMs)

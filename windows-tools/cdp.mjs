@@ -127,7 +127,7 @@ const main = async () => {
       // 把评测窗口带到前台**并铺满屏幕**：设最大化 → bringToFront → 用 Win32 强拉，然后**校验两件事**：
       //   ① 前台窗口标题 == 页面标题 —— 否则 Agent 的动作会落到别的窗口上（2026-09-25 实际发生过）；
       //   ② 窗口几何 ≈ 屏幕可用尺寸 —— 否则画面只占半屏，而"在前台"仍然成立（同一天实测：窗口是
-      //      `windowState: normal`、1265×1372，却通过了只看标题的检查，主人一眼看出没全屏）。
+      //      `windowState: normal`、1265×1372，却通过了只看标题的检查，作者一眼看出没全屏）。
       // 设置窗口状态失败**不再静默**：错误经 stateError 回报给调用方。几何是权威判据（它决定
       // Agent 实际看到多大的画面），windowState 只作诊断。
       const title = String(target.title ?? '')
@@ -141,7 +141,7 @@ const main = async () => {
         let state = cur?.bounds?.windowState
         // Chrome 的约束（2026-09-25 实测错误码 -32000）：「最小化/全屏」的窗口**不能直接**
         // 设为最大化，必须先恢复成 normal；否则请求被拒。旧实现把这条错误静默吞掉，结果只剩
-        // "拉前台"、窗口留在半屏 —— 正是主人看到的"没全屏"。
+        // "拉前台"、窗口留在半屏 —— 正是作者看到的"没全屏"。
         // `force`：几何判据不达标时（窗口可能"状态报 maximized、页面却报 outerWidth=0"，
         // 2026-09-25 实测），主动做一次 normal → maximized 的尺寸变化，逼 Chrome 重算视图尺寸。
         if (state === 'minimized' || state === 'fullscreen' || force) {

@@ -1,5 +1,5 @@
 /**
- * run-c-tasks.mjs —— 在实时 GUI benchmark（a/b/c/d 四类任务）上测 `dsh + dsh-real-time-computer-use`。
+ * run-c-tasks.mjs —— 在实时 GUI benchmark（a/b/c/d 四类任务）上测 `dsh + computer-use-plugin`。
  *
  * 设计（每一项都是为了让结果可复现、可审计）：
  *
@@ -32,11 +32,15 @@
 
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // ── 环境常量 ──────────────────────────────────────────────────────────────────
 
 /** 评测用的独立 DSH_HOME（与被测机器上日常使用的 `~/.dsh` 完全隔离）。 */
+/** 本仓库根目录（harness/ 的上一级；插件内嵌在 <根>/plugin）。 */
+const BENCH_ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
+
 const DSH_HOME = process.env.EVAL_DSH_HOME ?? '/home/administrator/dsh-lab'
 const DSH_BIN = join(DSH_HOME, 'toolchain/node_modules/.bin/dsh')
 const PATCH = '/home/administrator/dsh-cu-eval/eval.patch.yml'
@@ -55,7 +59,7 @@ const EVAL_ENV = {
   ...process.env,
   DSH_HOME,
   DSH_AGENTS_HOME: join(DSH_HOME, '.agents'),
-  DSH_BUNDLED_SKILL_DIR: join(DSH_HOME, 'plugins/dsh-real-time-computer-use/skills'),
+  DSH_BUNDLED_SKILL_DIR: join(BENCH_ROOT, 'plugin', 'skills'),
 }
 
 /** 评测素材（Windows 侧人类包）与它启动的静态服务。 */
